@@ -1,6 +1,6 @@
 package com.example.data.model.weather
 
-data class ShortWeatherResponse(
+data class WeatherResponse(
     val response: Response
 ) {
     data class Response(

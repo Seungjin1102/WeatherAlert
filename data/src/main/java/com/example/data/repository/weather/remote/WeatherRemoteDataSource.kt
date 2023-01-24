@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface WeatherRemoteDataSource {
 
-    suspend fun getShortWeather(): Flow<WeatherEntity>
+    suspend fun getShortWeather(): Flow<WeatherEntity> {
+        TODO()
+    }
 
-    suspend fun getMediumWeather(): Flow<WeatherEntity>
 }
