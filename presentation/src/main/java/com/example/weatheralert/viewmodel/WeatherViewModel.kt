@@ -8,6 +8,7 @@ import com.example.weatheralert.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -17,18 +18,27 @@ class WeatherViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val _eventFlow = MutableSharedFlow<Event>()
-    private val eventFlow = _eventFlow.asSharedFlow()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private val _weatherFlow = MutableStateFlow<List<WeatherEntity>?>(null)
-    private val weatherFlow = _weatherFlow.asStateFlow()
+    val weatherFlow = _weatherFlow.asStateFlow()
 
-    private fun getWeather() {
+    fun getWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        base_date: Int,
+        base_time: String,
+        nx: String,
+        ny: String
+    ) {
         viewModelScope.launch {
-            getWeatherUseCase.execute().onStart {
-
+            getWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).onStart {
+                Timber.d("getWeatherUseCase.execute 시작")
             }.catch {
-
+                Timber.d("getWeatherUseCase.execute catch $this")
             }.collect {
+                Timber.d("collect it: $it")
                 _weatherFlow.value = it
             }
         }

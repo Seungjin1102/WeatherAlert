@@ -5,6 +5,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface WeatherRepository {
 
-    suspend fun getWeather(): Flow<List<WeatherEntity>>
+    suspend fun getWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        base_date: Int,
+        base_time: String,
+        nx: String,
+        ny: String
+    ): Flow<List<WeatherEntity>>
 
 }

@@ -1,14 +1,14 @@
 package com.example.data.api
 
+import com.example.data.BuildConfig
 import com.example.data.model.weather.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiInterface {
 
-    @GET("getVilageFcst")
+    @GET("getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
     suspend fun getWeatherFlow(
-        @Query("serviceKey") serviceKey: String,
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") pageNo: Int,
         @Query("dataType") dataType: String,
