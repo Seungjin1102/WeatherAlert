@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.WeatherEntity
 import com.example.domain.usecase.GetWeatherUseCase
+import com.example.weatheralert.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -13,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val getWeatherUseCase: GetWeatherUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _eventFlow = MutableSharedFlow<Event>()
     private val eventFlow = _eventFlow.asSharedFlow()
