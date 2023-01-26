@@ -1,6 +1,5 @@
 package com.example.data.mapper
 
-import android.util.Log
 import com.example.data.model.weather.WeatherResponse
 import com.example.domain.model.WeatherEntity
 
@@ -10,7 +9,7 @@ fun mapperToWeather(items: WeatherResponse.Items): List<WeatherEntity> {
     val itemsList = items.item.toMutableList()
 
     while (itemsList.size >= 12) {
-        val item = itemsList.subList(0, 11)
+        val item = itemsList.subList(0, 12)
         var weatherEntity = WeatherEntity(item[0].fcstDate, item[0].fcstTime, "", "", "")
 
         item.filter { it.category == "TMP" }.map { weatherEntity.tmp = it.fcstValue }
@@ -21,7 +20,5 @@ fun mapperToWeather(items: WeatherResponse.Items): List<WeatherEntity> {
 
         itemsList.removeAll(item)
     }
-
     return weatherEntityList.toList()
-
 }

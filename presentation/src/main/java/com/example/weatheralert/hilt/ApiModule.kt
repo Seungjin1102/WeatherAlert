@@ -41,8 +41,6 @@ object ApiModule {
         headerInterceptor: Interceptor,
         LoggerInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
-        Log.d("sbandTest", "provideOkHttpClient()")
-
         val okHttpClientBuilder = OkHttpClient().newBuilder()
         okHttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(60, TimeUnit.SECONDS)

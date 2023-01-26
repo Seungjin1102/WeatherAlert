@@ -10,6 +10,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseFragment
 import com.example.weatheralert.databinding.FragmentHomeBinding
+import com.example.weatheralert.util.getCurrentDay
+import com.example.weatheralert.util.getCurrentTime
 import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -32,11 +34,11 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
 
         binding.title.setOnClickListener {
             viewModel.getWeather(
-                36,
+                864,
                 1,
                 "JSON",
-            20230125,
-                "1400",
+                getCurrentDay(),
+                getCurrentTime(),
                 "55",
                 "127"
             )

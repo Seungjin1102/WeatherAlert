@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface ApiInterface {
 
     @GET("getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
-    suspend fun getWeatherFlow(
+    suspend fun getWeather(
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") pageNo: Int,
         @Query("dataType") dataType: String,

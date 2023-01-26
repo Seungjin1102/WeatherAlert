@@ -36,7 +36,7 @@ class WeatherViewModel @Inject constructor(
             getWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).onStart {
                 Timber.d("getWeatherUseCase.execute 시작")
             }.catch {
-                Timber.d("getWeatherUseCase.execute catch $this")
+                Timber.d("getWeatherUseCase.execute catch $this.")
             }.collect {
                 Timber.d("collect it: $it")
                 _weatherFlow.value = it
