@@ -31,6 +31,7 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             getWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).onStart {
                 Timber.d("getWeatherUseCase.execute start")
+                _uiState.value = UiState.Loading
             }.catch {
                 Timber.d("getWeatherUseCase.execute catch")
                 _uiState.value = UiState.Error()
@@ -44,12 +45,7 @@ class WeatherViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading: UiState()
-
         data class Success(val weatherList: List<WeatherEntity>): UiState()
-
         data class Error(val errorCode: String = ""): UiState()
     }
-
-
-
 }

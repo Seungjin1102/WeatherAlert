@@ -10,8 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseFragment
 import com.example.weatheralert.databinding.FragmentHomeBinding
-import com.example.weatheralert.util.getCurrentDay
-import com.example.weatheralert.util.getCurrentTime
+import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -30,7 +29,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     when (it) {
-                        is UiState.Loading -> binding.textView.text = "로딩 중..."
+                        is UiState.Loading -> {}
                         is UiState.Success -> binding.textView.text = it.weatherList.toString()
                         is UiState.Error -> binding.textView.text = "실패"
                     }
@@ -39,12 +38,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         }
 
         binding.title.setOnClickListener {
+//            WeatherUtil.getLocation(requireActivity())
             viewModel.getWeather(
                 737,
                 1,
                 "JSON",
-                getCurrentDay(),
-                getCurrentTime(),
+                WeatherUtil.getCurrentDay(),
+                WeatherUtil.getCurrentTime(),
                 "55",
                 "127"
             )
@@ -52,11 +52,10 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
     }
 
 
+
     private fun handleState(uiState: UiState) = when (uiState) {
         is UiState.Loading -> Toast.makeText(requireContext(), "로딩 중", Toast.LENGTH_SHORT).show()
         is UiState.Success -> Toast.makeText(requireContext(), "성공", Toast.LENGTH_SHORT).show()
         is UiState.Error -> Toast.makeText(requireContext(), "에러 발생", Toast.LENGTH_SHORT).show()
     }
-
-
 }
