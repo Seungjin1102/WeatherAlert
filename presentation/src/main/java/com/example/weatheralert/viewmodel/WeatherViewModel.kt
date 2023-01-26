@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.WeatherEntity
 import com.example.domain.usecase.GetWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
+import com.example.weatheralert.util.WeatherUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

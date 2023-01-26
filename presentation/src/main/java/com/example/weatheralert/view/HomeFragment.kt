@@ -15,6 +15,8 @@ import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.example.weatheralert.viewmodel.WeatherViewModel.UiState
+import timber.log.Timber
+import kotlin.math.PI
 
 @AndroidEntryPoint
 class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout.fragment_home) {
@@ -38,16 +40,20 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         }
 
         binding.title.setOnClickListener {
-//            WeatherUtil.getLocation(requireActivity())
-            viewModel.getWeather(
-                737,
-                1,
-                "JSON",
-                WeatherUtil.getCurrentDay(),
-                WeatherUtil.getCurrentTime(),
-                "55",
-                "127"
-            )
+            val point = WeatherUtil.getLocation(requireActivity())
+            Timber.d("point 다음")
+            if (point == null) Toast.makeText(requireContext(), "위치 정보를 얻을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            else {
+                viewModel.getWeather(
+                    737,
+                    1,
+                    "JSON",
+                    WeatherUtil.getCurrentDay(),
+                    WeatherUtil.getCurrentTime(),
+                    point.x.toString(),
+                    point.y.toString()
+                )
+            }
         }
     }
 
