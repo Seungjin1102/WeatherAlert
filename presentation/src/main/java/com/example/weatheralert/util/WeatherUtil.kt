@@ -1,24 +1,19 @@
 package com.example.weatheralert.util
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Point
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import androidx.core.content.ContextCompat
-import com.gun0912.tedpermission.PermissionListener
-
-import com.gun0912.tedpermission.normal.TedPermission
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import android.os.Build
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import kotlin.coroutines.resume
 
 object WeatherUtil {
 
@@ -28,7 +23,6 @@ object WeatherUtil {
         val current = LocalDateTime.now()
         return current.format(DateTimeFormatter.ISO_DATE).replace("-", "").toInt()
     }
-
 
     fun getCurrentTime(): String {
         val current = LocalDateTime.now()
@@ -44,10 +38,124 @@ object WeatherUtil {
         else time.toString()
     }
 
+    fun getLocation(activity: Activity): Point? {
+        var point: Point? = null
+        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        var latitude = 0.0
+        var longitude = 0.0
+        var userLocation: Location = getLatLng(activity)
+
+        if (userLocation != null) {
+            latitude = userLocation.latitude
+            longitude = userLocation.longitude
+            Timber.d("latitude: $latitude longitude: $longitude")
+            point = dfsXyConv(latitude, longitude)
+        }
+
+        return point
+    }
+//
+//    fun getAddress(activity: Activity) {
+//        if (locationManager == null) locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+//        val geocoder = Geocoder(activity)
+//        val location = getLatLng()
+//        var address = mutableListOf<Address>()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
+//                override fun onGeocode(p0: MutableList<Address>) {
+//                    address = p0
+//                }
+//
+//                override fun onError(errorMessage: String?) {
+//                    super.onError(errorMessage)
+//                }
+//            })
+//        } else {
+////            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)?.get(0).toString()
+//            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)!!.toMutableList()
+//        }
+//
+//
+//        Timber.d("address: $address")
+//    }
+
+    suspend fun susGetAddress(activity: Activity) {
+
+        val geocoder = Geocoder(activity)
+        val location = getLatLng(activity)
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            coroutineScope {
+//                val result = CoroutineScope(Dispatchers.Main).async {
+//                    var res = mutableListOf<Address>()
+//                    geocoder.getFromLocation(37.0, 127.0, 8) {
+//                        Timber.d("위치 정보 콜백")
+//                        res = it
+//                    }
+//                    res
+//                }
+//                val address = result.await()
+//                Timber.d("address: ${address[0]}")
+//            }
+//
+//        } else {
+//
+//        }
+
+        val result = suspendCancellableCoroutine { continuation ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
+                    override fun onGeocode(p0: MutableList<Address>) {
+                        Timber.d("콜백 안 p0: $p0")
+                        continuation.resume(p0)
+                    }
+
+                    override fun onError(errorMessage: String?) {
+                        Timber.d("콜백 실패")
+                        super.onError(errorMessage)
+                        continuation.cancel()
+                    }
+                })
+            }
+        }
+
+        Timber.d("result: ${result[0]}")
+    }
 
 
 
-    fun dfsXyConv(v1: Double, v2: Double) : Point {
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
+//                override fun onGeocode(p0: MutableList<Address>) {
+//                    address = p0
+//                }
+//
+//                override fun onError(errorMessage: String?) {
+//                    super.onError(errorMessage)
+//                }
+//            })
+//        } else {
+////            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)?.get(0).toString()
+//            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)!!.toMutableList()
+//        }
+
+
+
+//    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLatLng(activity: Activity): Location{
+        if (locationManager == null) locationManager =
+            activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        var currentLatLng: Location? = null
+        val locationProvider = LocationManager.GPS_PROVIDER
+
+        currentLatLng = locationManager?.getLastKnownLocation(locationProvider) ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        return currentLatLng!!
+    }
+
+    private fun dfsXyConv(v1: Double, v2: Double) : Point {
         val RE = 6371.00877     // 지구 반경(km)
         val GRID = 5.0          // 격자 간격(km)
         val SLAT1 = 30.0        // 투영 위도1(degree)
@@ -82,91 +190,5 @@ object WeatherUtil {
         Timber.d("x: $x y: $y")
         return Point(x, y)
     }
-
-//    fun getLocation1(activity: Activity) {
-//        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-//        var latitude = 0.0
-//        var longitude = 0.0
-//        var userLocation: Location = getLatLng(activity)
-//        if(userLocation != null){
-//            latitude = userLocation.latitude
-//            longitude = userLocation.longitude
-//            Timber.d("latitude: $latitude longitude: $longitude")
-//
-//            var mGeoCoder =  Geocoder(activity.applicationContext, Locale.KOREAN)
-////        var mResultList: List<Address>? = null
-////        try{
-////            mResultList = mGeoCoder.getFromLocation(
-////                latitude!!, longitude!!, 1
-////            )
-////        }catch(e: IOException){
-////            e.printStackTrace()
-////        }
-////        if(mResultList != null){
-////            Log.d("CheckCurrentLocation", mResultList[0].getAddressLine(0))
-////        }
-//        }
-//    }
-
-    @SuppressLint("MissingPermission")
-    private fun getLatLng(activity: Activity): Location{
-        var currentLatLng: Location? = null
-    var hasFineLocationPermission = ContextCompat.checkSelfPermission(activity,
-        Manifest.permission.ACCESS_FINE_LOCATION)
-    var hasCoarseLocationPermission = ContextCompat.checkSelfPermission(activity,
-        Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        if(true){
-            val locatioNProvider = LocationManager.GPS_PROVIDER
-            currentLatLng = locationManager?.getLastKnownLocation(locatioNProvider)
-        }else{
-//            if(ActivityCompat.shouldShowRequestPermissionRationale(activity, REQUIRED_PERMISSIONS[0])){
-//                Toast.makeText(this, "앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-//                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
-//            }else{
-//                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
-//            }
-//            currentLatLng = getLatLng()
-        }
-        return currentLatLng!!
-    }
-
-    fun getLocation(activity: Activity): Point? {
-        var point: Point? = null
-        runBlocking {
-            requestPermission {
-                locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-                var latitude = 0.0
-                var longitude = 0.0
-                var userLocation: Location = getLatLng(activity)
-
-                if (userLocation != null) {
-                    latitude = userLocation.latitude
-                    longitude = userLocation.longitude
-                    Timber.d("latitude: $latitude longitude: $longitude")
-                    point = dfsXyConv(latitude, longitude)
-                    return@requestPermission
-                }
-            }
-        }
-        return point
-    }
-
-    private fun requestPermission(logic: () -> Unit) {
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() {
-                    logic()
-                }
-
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Timber.d("위치 권한 없음")
-                }
-            })
-            .setDeniedMessage("권한을 허용해주세요")
-            .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-            .check()
-    }
-
 
 }

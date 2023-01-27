@@ -1,5 +1,6 @@
 package com.example.weatheralert.view
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -15,13 +16,17 @@ import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.example.weatheralert.viewmodel.WeatherViewModel.UiState
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
-import kotlin.math.PI
 
 @AndroidEntryPoint
 class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout.fragment_home) {
 
     override val viewModel: WeatherViewModel by viewModels()
+    private var isCheckPermission: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,24 +45,56 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         }
 
         binding.title.setOnClickListener {
-            val point = WeatherUtil.getLocation(requireActivity())
-            Timber.d("point 다음")
-            if (point == null) Toast.makeText(requireContext(), "위치 정보를 얻을 수 없습니다.", Toast.LENGTH_SHORT).show()
-            else {
-                viewModel.getWeather(
-                    737,
-                    1,
-                    "JSON",
-                    WeatherUtil.getCurrentDay(),
-                    WeatherUtil.getCurrentTime(),
-                    point.x.toString(),
-                    point.y.toString()
-                )
-            }
+            getWeather()
+        }
+
+        requestPermission()
+//        WeatherUtil.getAddress(requireActivity())
+    }
+
+    private fun getWeather() {
+        if (!isCheckPermission) {
+            Toast.makeText(requireContext(), "위치 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val point = WeatherUtil.getLocation(requireActivity())
+        if (point == null) Toast.makeText(requireContext(), "위치 정보 오류 발생!!", Toast.LENGTH_SHORT).show()
+        else {
+            viewModel.getWeather(
+                737,
+                1,
+                "JSON",
+                WeatherUtil.getCurrentDay(),
+                WeatherUtil.getCurrentTime(),
+                point.x.toString(),
+                point.y.toString()
+            )
         }
     }
 
+    private fun requestPermission() {
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+                override fun onPermissionGranted() {
+                    isCheckPermission = true
+                    CoroutineScope(Dispatchers.Main).launch {
+                        WeatherUtil.susGetAddress(requireActivity())
+                    }
+                    Timber.d("코루틴 밖")
+//                    WeatherUtil.getAddress(requireActivity())
+//                    getWeather()
+                }
 
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Timber.d("위치 권한 없음")
+                    isCheckPermission = false
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요")
+            .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            .check()
+    }
 
     private fun handleState(uiState: UiState) = when (uiState) {
         is UiState.Loading -> Toast.makeText(requireContext(), "로딩 중", Toast.LENGTH_SHORT).show()
