@@ -13,6 +13,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 object WeatherUtil {
@@ -116,6 +117,10 @@ object WeatherUtil {
                         continuation.cancel()
                     }
                 })
+            }  else {
+                geocoder.getFromLocation(location.latitude, location.longitude, 8)?.let {
+                    continuation.resume(it)
+                }
             }
         }
 
