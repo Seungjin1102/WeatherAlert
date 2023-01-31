@@ -35,11 +35,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
-                    when (it) {
-                        is UiState.Loading -> {}
-                        is UiState.Success -> binding.textView.text = it.weatherList.toString()
-                        is UiState.Error -> binding.textView.text = "실패"
-                    }
+                    handleState(it)
                 }
             }
         }
@@ -49,7 +45,6 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         }
 
         requestPermission()
-//        WeatherUtil.getAddress(requireActivity())
     }
 
     private fun getWeather() {
@@ -79,11 +74,9 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
                 override fun onPermissionGranted() {
                     isCheckPermission = true
                     CoroutineScope(Dispatchers.Main).launch {
-                        WeatherUtil.susGetAddress(requireActivity())
+                        viewModel.getAddress(requireActivity())
                     }
                     Timber.d("코루틴 밖")
-//                    WeatherUtil.getAddress(requireActivity())
-//                    getWeather()
                 }
 
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -91,14 +84,20 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
                     isCheckPermission = false
                 }
             })
-            .setDeniedMessage("권한을 허용해주세요")
+            .setDeniedMessage("권한을 허용해주세요.")
             .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .check()
     }
 
     private fun handleState(uiState: UiState) = when (uiState) {
         is UiState.Loading -> Toast.makeText(requireContext(), "로딩 중", Toast.LENGTH_SHORT).show()
-        is UiState.Success -> Toast.makeText(requireContext(), "성공", Toast.LENGTH_SHORT).show()
+        is UiState.Success<*> -> {
+           if (uiState.data is List<*>) {
+               binding.textView.text = uiState.data.toString()
+           } else {
+               binding.address.text = uiState.data.toString()
+           }
+        }
         is UiState.Error -> Toast.makeText(requireContext(), "에러 발생", Toast.LENGTH_SHORT).show()
     }
 }

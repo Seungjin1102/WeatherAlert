@@ -9,11 +9,12 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 object WeatherUtil {
@@ -39,6 +40,9 @@ object WeatherUtil {
         else time.toString()
     }
 
+    /**
+     * 현재 GPS return
+     */
     fun getLocation(activity: Activity): Point? {
         var point: Point? = null
         locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
@@ -50,105 +54,15 @@ object WeatherUtil {
             latitude = userLocation.latitude
             longitude = userLocation.longitude
             Timber.d("latitude: $latitude longitude: $longitude")
-            point = dfsXyConv(latitude, longitude)
+            point = pointConverter(latitude, longitude)
         }
 
         return point
     }
-//
-//    fun getAddress(activity: Activity) {
-//        if (locationManager == null) locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-//        val geocoder = Geocoder(activity)
-//        val location = getLatLng()
-//        var address = mutableListOf<Address>()
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
-//                override fun onGeocode(p0: MutableList<Address>) {
-//                    address = p0
-//                }
-//
-//                override fun onError(errorMessage: String?) {
-//                    super.onError(errorMessage)
-//                }
-//            })
-//        } else {
-////            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)?.get(0).toString()
-//            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)!!.toMutableList()
-//        }
-//
-//
-//        Timber.d("address: $address")
-//    }
 
-    suspend fun susGetAddress(activity: Activity) {
-
-        val geocoder = Geocoder(activity)
-        val location = getLatLng(activity)
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            coroutineScope {
-//                val result = CoroutineScope(Dispatchers.Main).async {
-//                    var res = mutableListOf<Address>()
-//                    geocoder.getFromLocation(37.0, 127.0, 8) {
-//                        Timber.d("위치 정보 콜백")
-//                        res = it
-//                    }
-//                    res
-//                }
-//                val address = result.await()
-//                Timber.d("address: ${address[0]}")
-//            }
-//
-//        } else {
-//
-//        }
-
-        val result = suspendCancellableCoroutine { continuation ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
-                    override fun onGeocode(p0: MutableList<Address>) {
-                        Timber.d("콜백 안 p0: $p0")
-                        continuation.resume(p0)
-                    }
-
-                    override fun onError(errorMessage: String?) {
-                        Timber.d("콜백 실패")
-                        super.onError(errorMessage)
-                        continuation.cancel()
-                    }
-                })
-            }  else {
-                geocoder.getFromLocation(location.latitude, location.longitude, 8)?.let {
-                    continuation.resume(it)
-                }
-            }
-        }
-
-        Timber.d("result: ${result[0]}")
-    }
-
-
-
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
-//                override fun onGeocode(p0: MutableList<Address>) {
-//                    address = p0
-//                }
-//
-//                override fun onError(errorMessage: String?) {
-//                    super.onError(errorMessage)
-//                }
-//            })
-//        } else {
-////            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)?.get(0).toString()
-//            address = geocoder.getFromLocation(location.latitude, location.longitude, 8)!!.toMutableList()
-//        }
-
-
-
-//    }
-
+    /**
+     * 현재 GPS 위경도 return
+     */
     @SuppressLint("MissingPermission")
     private fun getLatLng(activity: Activity): Location{
         if (locationManager == null) locationManager =
@@ -160,7 +74,10 @@ object WeatherUtil {
         return currentLatLng!!
     }
 
-    private fun dfsXyConv(v1: Double, v2: Double) : Point {
+    /**
+     * 기상청 단기예보에서 쓰는 Point 계산
+     */
+    private fun pointConverter(v1: Double, v2: Double) : Point {
         val RE = 6371.00877     // 지구 반경(km)
         val GRID = 5.0          // 격자 간격(km)
         val SLAT1 = 30.0        // 투영 위도1(degree)
@@ -194,6 +111,43 @@ object WeatherUtil {
         val y = (ro - ra * Math.cos(theta) + YO + 0.5).toInt()
         Timber.d("x: $x y: $y")
         return Point(x, y)
+    }
+
+    /**
+     * 현재 주소 return
+     * 시, 구, 군 까지 표시
+     */
+    suspend fun susGetAddress(activity: Activity): Flow<String> {
+        val geocoder = Geocoder(activity)
+        val location = getLatLng(activity)
+
+        val result = suspendCancellableCoroutine { continuation ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(location.latitude, location.longitude, 8, object : Geocoder.GeocodeListener {
+                    override fun onGeocode(p0: MutableList<Address>) {
+                        Timber.d("콜백 안 p0: $p0")
+                        continuation.resume(p0)
+                    }
+
+                    override fun onError(errorMessage: String?) {
+                        Timber.d("콜백 실패")
+                        super.onError(errorMessage)
+                        continuation.cancel()
+                    }
+                })
+            }  else {
+                geocoder.getFromLocation(location.latitude, location.longitude, 8)?.let {
+                    continuation.resume(it)
+                }
+            }
+        }
+
+        val address = result[0].let {
+            it.adminArea + " " + it.subLocality + " " + it.thoroughfare
+        }
+        Timber.d("address: $address")
+
+        return flow { emit(address) }
     }
 
 }

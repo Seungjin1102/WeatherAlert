@@ -1,10 +1,11 @@
 package com.example.weatheralert.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
-import com.example.domain.model.WeatherEntity
 import com.example.domain.usecase.GetWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
 import com.example.weatheralert.util.WeatherUtil
+import com.example.weatheralert.view.WeatherActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -39,14 +40,23 @@ class WeatherViewModel @Inject constructor(
             }.collect {
                 Timber.d("collect it: $it")
                 _uiState.value = UiState.Success(it)
+
             }
         }
     }
 
+    fun getAddress(context: Context) {
+        viewModelScope.launch {
+            WeatherUtil.susGetAddress(context as WeatherActivity).collect {
+                Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
+                _uiState.value = UiState.Success(it)
+            }
+        }
+    }
 
     sealed class UiState {
         object Loading: UiState()
-        data class Success(val weatherList: List<WeatherEntity>): UiState()
+        data class Success<T>(val data: T): UiState()
         data class Error(val errorCode: String = ""): UiState()
     }
 }
