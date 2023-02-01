@@ -21,6 +21,9 @@ class WeatherViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _addressState: MutableStateFlow<String> = MutableStateFlow("")
+    val addressState = _addressState.asStateFlow()
+
     fun getWeather(
         numOfRows: Int,
         pageNo: Int,
@@ -49,7 +52,8 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             WeatherUtil.susGetAddress(context as WeatherActivity).collect {
                 Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
-                _uiState.value = UiState.Success(it)
+//                _uiState.value = UiState.Success(it)
+                _addressState.value = it
             }
         }
     }
