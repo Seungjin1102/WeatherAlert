@@ -54,7 +54,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             layout="@layout/layout_current_weather"
-            app:address="@{viewmodel.addressState}" />
+            app:address="@{viewmodel.addressState}"
+            app:viewmodel="@{viewmodel}"/>
 
         <TextView
             android:id="@+id/address"

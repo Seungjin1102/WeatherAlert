@@ -56,7 +56,6 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             WeatherUtil.susGetAddress(context as WeatherActivity).collect {
                 Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
-//                _uiState.value = UiState.Success(it)
                 _addressState.value = it
             }
         }

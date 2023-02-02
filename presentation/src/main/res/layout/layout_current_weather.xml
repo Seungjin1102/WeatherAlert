@@ -4,14 +4,6 @@
 
     <data>
         <variable
-            name="pop"
-            type="String" />
-
-        <variable
-            name="tmp"
-            type="String" />
-
-        <variable
             name="address"
             type="String" />
         <variable
@@ -29,12 +21,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="@{viewmodel.currentWeather.component4()}"
+            android:text="@{viewmodel.currentWeather.component3()}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
