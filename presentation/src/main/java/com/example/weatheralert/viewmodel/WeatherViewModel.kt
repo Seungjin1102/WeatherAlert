@@ -2,6 +2,7 @@ package com.example.weatheralert.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.example.domain.model.WeatherEntity
 import com.example.domain.usecase.GetWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
 import com.example.weatheralert.util.WeatherUtil
@@ -24,6 +25,9 @@ class WeatherViewModel @Inject constructor(
     private val _addressState: MutableStateFlow<String> = MutableStateFlow("")
     val addressState = _addressState.asStateFlow()
 
+    private val _currentWeather: MutableStateFlow<WeatherEntity?> = MutableStateFlow(null)
+    val currentWeather = _currentWeather.asStateFlow()
+
     fun getWeather(
         numOfRows: Int,
         pageNo: Int,
@@ -43,7 +47,7 @@ class WeatherViewModel @Inject constructor(
             }.collect {
                 Timber.d("collect it: $it")
                 _uiState.value = UiState.Success(it)
-
+                _currentWeather.value = it.first()
             }
         }
     }
