@@ -45,6 +45,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         }
 
         requestPermission()
+//        getWeather()
     }
 
     private fun getWeather() {
