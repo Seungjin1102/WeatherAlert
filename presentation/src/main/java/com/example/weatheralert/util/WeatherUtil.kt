@@ -68,9 +68,8 @@ object WeatherUtil {
         if (locationManager == null) locationManager =
             activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
         var currentLatLng: Location? = null
-        val locationProvider = LocationManager.GPS_PROVIDER
 
-        currentLatLng = locationManager?.getLastKnownLocation(locationProvider) ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        currentLatLng = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)// ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         return currentLatLng!!
     }
 

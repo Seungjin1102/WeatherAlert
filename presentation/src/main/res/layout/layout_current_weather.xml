@@ -15,8 +15,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="30dp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/sky"
@@ -30,44 +29,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/temperatures"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="50sp"
-            android:text="@{viewmodel.currentWeather.component3()}"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@id/sky"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/water_drop"
-            tools:text="-7°"/>
+            app:layout_constraintStart_toStartOf="@id/sky"
+            app:layout_constraintEnd_toEndOf="@id/sky">
 
-        <ImageView
-            android:id="@+id/water_drop"
-            android:layout_width="20dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/water_drop"
-            app:layout_constraintTop_toTopOf="@id/temperatures"
-            app:layout_constraintStart_toEndOf="@id/temperatures"
-            app:layout_constraintBottom_toBottomOf="@id/temperatures"
-            app:layout_constraintEnd_toStartOf="@id/pop" />
+            <TextView
+                android:id="@+id/temperatures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="50sp"
+                android:text="@{viewmodel.currentWeather.component3() + '°'}"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/water_drop"
+                tools:text="-7°"/>
 
-        <TextView
-            android:id="@+id/pop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@{viewmodel.currentWeather.component4()}"
-            app:layout_constraintTop_toTopOf="@id/temperatures"
-            app:layout_constraintStart_toEndOf="@id/water_drop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/temperatures"
-            tools:text="40%"/>
+            <ImageView
+                android:id="@+id/water_drop"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/water_drop"
+                app:layout_constraintTop_toTopOf="@id/temperatures"
+                app:layout_constraintStart_toEndOf="@id/temperatures"
+                app:layout_constraintBottom_toBottomOf="@id/temperatures"
+                app:layout_constraintEnd_toStartOf="@id/pop" />
+
+            <TextView
+                android:id="@+id/pop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="@{viewmodel.currentWeather.component4() + '%'}"
+                app:layout_constraintTop_toTopOf="@id/temperatures"
+                app:layout_constraintStart_toEndOf="@id/water_drop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/temperatures"
+                tools:text="40%"/>
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.addressState}"
+                app:layout_constraintTop_toBottomOf="@id/temperatures"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.WeatherEntity
 import com.example.domain.usecase.GetWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
+import com.example.weatheralert.base.UiState
 import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.view.WeatherActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,7 @@ class WeatherViewModel @Inject constructor(
     private val getWeatherUseCase: GetWeatherUseCase
 ) : BaseViewModel() {
 
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+    private val _uiState: MutableStateFlow<UiState<List<WeatherEntity>>> = MutableStateFlow(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val _addressState: MutableStateFlow<String> = MutableStateFlow("")
@@ -43,7 +44,7 @@ class WeatherViewModel @Inject constructor(
                 _uiState.value = UiState.Loading
             }.catch {
                 Timber.d("getWeatherUseCase.execute catch")
-                _uiState.value = UiState.Error()
+                _uiState.value = UiState.Error(null)
             }.collect {
                 Timber.d("collect it: $it")
                 _uiState.value = UiState.Success(it)
@@ -61,9 +62,9 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    sealed class UiState {
-        object Loading: UiState()
-        data class Success<T>(val data: T): UiState()
-        data class Error(val errorCode: String = ""): UiState()
-    }
+//    sealed class UiState<out T> {
+//        object Loading: UiState<Nothing>()
+//        data class Success<T>(val data: T): UiState<T>()
+//        data class Error(val errorCode: String = ""): UiState<Nothing>()
+//    }
 }

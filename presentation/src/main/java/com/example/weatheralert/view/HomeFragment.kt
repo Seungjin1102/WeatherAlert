@@ -15,7 +15,6 @@ import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import com.example.weatheralert.viewmodel.WeatherViewModel.UiState
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.CoroutineScope
@@ -35,13 +34,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
-                    handleState(it)
+//                    handleState(it)
                 }
             }
         }
 
         binding.title.setOnClickListener {
-            getWeather()
+//            getWeather()
         }
 
         requestPermission()
@@ -74,6 +73,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
                     isCheckPermission = true
+                    getWeather()
                     CoroutineScope(Dispatchers.Main).launch {
                         viewModel.getAddress(requireActivity())
                     }
@@ -90,15 +90,15 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             .check()
     }
 
-    private fun handleState(uiState: UiState) = when (uiState) {
-        is UiState.Loading -> Toast.makeText(requireContext(), "로딩 중", Toast.LENGTH_SHORT).show()
-        is UiState.Success<*> -> {
-           if (uiState.data is List<*>) {
-               binding.textView.text = uiState.data.toString()
-           } else {
-               binding.address.text = uiState.data.toString()
-           }
-        }
-        is UiState.Error -> Toast.makeText(requireContext(), "에러 발생", Toast.LENGTH_SHORT).show()
-    }
+//    private fun handleState(uiState: UiState) = when (uiState) {
+//        is UiState.Loading -> Toast.makeText(requireContext(), "로딩 중", Toast.LENGTH_SHORT).show()
+//        is UiState.Success<*> -> {
+//           if (uiState.data is List<*>) {
+////               binding.textView.text = uiState.data.toString()
+//           } else {
+//               binding.address.text = uiState.data.toString()
+//           }
+//        }
+//        is UiState.Error -> Toast.makeText(requireContext(), "에러 발생", Toast.LENGTH_SHORT).show()
+//    }
 }
