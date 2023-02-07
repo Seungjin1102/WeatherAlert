@@ -6,25 +6,24 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.domain.model.WeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.base.UiState
-import com.example.weatheralert.base.successOrNull
-import com.example.weatheralert.viewmodel.WeatherViewModel
 import timber.log.Timber
 
 object WeatherBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("isLoading")
-    fun isLoading(view: ProgressBar, uiState: UiState<*>) {
-        view.visibility = if (uiState is UiState.Loading) View.VISIBLE else View.GONE
+    fun ProgressBar.isLoading(uiState: UiState<*>) {
+        this.visibility = if (uiState is UiState.Loading) View.VISIBLE else View.GONE
     }
 
     @JvmStatic
     @BindingAdapter("isShow")
-    fun isShow(view: View, uiState: UiState<List<WeatherEntity>>) {
-        view.visibility = if (uiState is UiState.Loading) View.GONE else View.VISIBLE
+    fun View.isShow(uiState: UiState<List<WeatherEntity>>) {
+        this.visibility = if (uiState is UiState.Loading) View.GONE else View.VISIBLE
     }
 
     @JvmStatic
@@ -40,10 +39,12 @@ object WeatherBindingAdapter {
     @JvmStatic
     @BindingAdapter("todayItem")
     fun RecyclerView.bindTodayItem(uiState: UiState<List<WeatherEntity>>) {
-        val boundAdapter = this.adapter
-        Timber.d("boundAdapter: $boundAdapter")
-        if (boundAdapter is TodayWeatherAdapter) {
-            boundAdapter.submitList(uiState.successOrNull())
+        if (uiState is UiState.Success) {
+            val adapter = TodayWeatherAdapter()
+            this.adapter = adapter
+            val today = uiState.data.first().date
+            adapter.submitList(uiState.data.filter { it.date == today })
+            this.addItemDecoration(TodayWeatherAdapter.TodayWeatherItemDecoration())
         }
     }
 
