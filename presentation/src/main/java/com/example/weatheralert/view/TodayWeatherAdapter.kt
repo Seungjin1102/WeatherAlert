@@ -14,7 +14,7 @@ import com.example.domain.model.WeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.databinding.ItemTodayWeatherBinding
 
-class TodayWeatherAdapter: ListAdapter<WeatherEntity, TodayWeatherAdapter.TodayWeatherViewHolder>(diffUtil) {
+class TodayWeatherAdapter : ListAdapter<WeatherEntity, TodayWeatherAdapter.TodayWeatherViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayWeatherViewHolder {
         return TodayWeatherViewHolder(
@@ -86,7 +86,6 @@ class TodayWeatherAdapter: ListAdapter<WeatherEntity, TodayWeatherAdapter.TodayW
             override fun areContentsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
                 return oldItem == newItem
             }
-
         }
     }
 }

@@ -49,6 +49,24 @@ object WeatherBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("weeklyItem")
+    fun RecyclerView.bindWeeklyItem(uiState: UiState<List<WeatherEntity>>) {
+        if (uiState is UiState.Success) {
+            val adapter = WeeklyWeatherAdapter()
+            this.adapter = adapter
+            var lastDay = ""
+            val weeklyList = mutableListOf<WeatherEntity>()
+            uiState.data.forEach {
+                if (lastDay != it.date) {
+                    lastDay = it.date
+                    weeklyList.add(it)
+                }
+            }
+            adapter.submitList(weeklyList)
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("sky", "pty")
     fun ImageView.bindCurrentSky(sky: String?, pty: String?) {
         if (sky != null && pty != null) {
