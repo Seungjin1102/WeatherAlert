@@ -42,8 +42,8 @@ object WeatherBindingAdapter {
         if (uiState is UiState.Success) {
             val adapter = TodayWeatherAdapter()
             this.adapter = adapter
-            val today = uiState.data.first().date
-            adapter.submitList(uiState.data.filter { it.date == today })
+            val currentDay = uiState.data.first().date
+            adapter.submitList(uiState.data.filter { it.date.toInt() < currentDay.toInt() + 3 })
             this.addItemDecoration(TodayWeatherAdapter.TodayWeatherItemDecoration())
         }
     }

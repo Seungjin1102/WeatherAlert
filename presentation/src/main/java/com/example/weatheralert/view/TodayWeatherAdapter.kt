@@ -27,15 +27,20 @@ class TodayWeatherAdapter : ListAdapter<WeatherEntity, TodayWeatherAdapter.Today
     }
 
     override fun onBindViewHolder(holder: TodayWeatherViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position)
     }
 
 
     class TodayWeatherViewHolder(
         private val binding: ItemTodayWeatherBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: WeatherEntity) {
-            binding.time.text = converterTime(item.time)
+        fun bind(item: WeatherEntity, position: Int) {
+            binding.time.text = if (item.time == "0000") {
+                if (position in 1..23) "내일"
+                else "모레"
+            } else {
+                converterTime(item.time)
+            }
             binding.sky.setImageResource(setSkyImage(item.sky, item.pty))
             binding.tmp.text = item.tmp + "°"
             binding.popText.text = item.pop + "%"
@@ -48,7 +53,8 @@ class TodayWeatherAdapter : ListAdapter<WeatherEntity, TodayWeatherAdapter.Today
                 stringTime = if (this < 12) {
                     "오전 " + this + "시"
                 } else {
-                    "오후 " + (this - 12) + "시"
+                    if (this == 12) "오후 12시"
+                    else "오후 " + (this - 12) + "시"
                 }
             }
 
