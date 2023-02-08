@@ -20,6 +20,7 @@ android {
         consumerProguardFiles "consumer-rules.pro"
 
         buildConfigField "String", "WEATHER_API_KEY", properties['weather_api_key']
+        buildConfigField "String", "MID_WEATHER_API_KEY", properties['mid_weather_api_key']
     }
 
     buildTypes {
