@@ -1,12 +1,24 @@
 package com.example.weatheralert.di
 
 import android.app.Application
+import android.content.Context
 import com.example.weatheralert.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
 @HiltAndroidApp
-class DIApplication: Application() {
+class WeatherApplication: Application() {
+
+    init{
+        instance = this
+    }
+
+    companion object {
+        lateinit var instance: WeatherApplication
+        fun applicationContext() : Context {
+            return instance.applicationContext
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -15,6 +27,7 @@ class DIApplication: Application() {
             Timber.plant(TimberDebugTree())
         }
     }
+
 }
 
 class TimberDebugTree: Timber.DebugTree() {
