@@ -24,39 +24,15 @@ import javax.inject.Qualifier
 @InstallIn(SingletonComponent::class)
 object ApiModule {
 
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class Weather
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class MidWeather
-
     @Provides
-    fun provideWeatherApiInterface(@Weather retrofit: Retrofit): ApiInterface {
+    fun provideApiInterface(retrofit: Retrofit): ApiInterface {
         return retrofit.create(ApiInterface::class.java)
     }
 
     @Provides
-    fun provideMidWeatherApiInterface(@MidWeather retrofit: Retrofit): MidWeatherInterface {
-        return retrofit.create(MidWeatherInterface::class.java)
-    }
-
-    @Provides
-    @Weather
-    fun provideWeatherRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiClient.WEATHER_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build()
-    }
-
-    @Provides
-    @MidWeather
-    fun provideMidWeatherRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(ApiClient.MID_WEATHER_BASE_URL)
+            .baseUrl(ApiClient.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
