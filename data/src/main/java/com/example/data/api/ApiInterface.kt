@@ -25,7 +25,7 @@ interface ApiInterface {
         @Query("pageNo") pageNo: Int,
         @Query("dataType") dataType: String,
         @Query("regId") regId: String,
-        @Query("tnFc") tmFc: String
+        @Query("tmFc") tmFc: String
     ) : MidTmpWeatherResponse
 
 }
