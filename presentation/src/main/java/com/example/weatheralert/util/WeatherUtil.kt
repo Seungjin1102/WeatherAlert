@@ -9,6 +9,8 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
+import com.example.weatheralert.R
+import com.example.weatheralert.di.WeatherApplication
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -147,6 +149,17 @@ object WeatherUtil {
         Timber.d("address: $address")
 
         return flow { emit(address) }
+    }
+
+    fun getReadExelTest() {
+        val list = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
+        val address = "군산"
+        var result = ""
+        list.forEachIndexed { index, s ->
+            if (s.split("|").first() == address) result = s.split("|").last()
+        }
+        Timber.d("result: $result")
+
     }
 
 }

@@ -50,6 +50,15 @@ class WeatherViewModel @Inject constructor(
                 _uiState.value = UiState.Success(it)
                 _currentWeather.value = it.first()
             }
+//            val newFlow = getWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny)
+//                .zip(getWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny)) {
+//                    flow1, flow2 ->
+//                    val result = flow1[0].date + flow1[1].date
+//                    result
+//                }
+//            newFlow.collect {
+//                Timber.d("flow test it: $it")
+//            }
         }
     }
 

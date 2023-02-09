@@ -65,6 +65,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
                 point.x.toString(),
                 point.y.toString()
             )
+            WeatherUtil.getReadExelTest()
         }
     }
 

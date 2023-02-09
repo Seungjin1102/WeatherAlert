@@ -1,5 +1,6 @@
 package com.example.data.repository.weather.remote
 
+import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -14,6 +15,16 @@ interface WeatherRemoteDataSource {
         nx: String,
         ny: String
     ): Flow<WeatherResponse>
+
+    suspend fun getMidTmpWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ) : Flow<MidTmpWeatherResponse>
+
+
 
 
 

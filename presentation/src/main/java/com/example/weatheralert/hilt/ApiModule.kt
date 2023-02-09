@@ -3,6 +3,7 @@ package com.example.weatheralert.hilt
 import android.util.Log
 import com.example.data.api.ApiClient
 import com.example.data.api.ApiInterface
+import com.example.data.api.MidWeatherInterface
 import com.example.weatheralert.BuildConfig
 import com.google.gson.GsonBuilder
 import com.orhanobut.logger.AndroidLogAdapter
@@ -17,20 +18,45 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Weather
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class MidWeather
+
     @Provides
-    fun provideApiInterface(retrofit: Retrofit): ApiInterface {
+    fun provideWeatherApiInterface(@Weather retrofit: Retrofit): ApiInterface {
         return retrofit.create(ApiInterface::class.java)
     }
 
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideMidWeatherApiInterface(@MidWeather retrofit: Retrofit): MidWeatherInterface {
+        return retrofit.create(MidWeatherInterface::class.java)
+    }
+
+    @Provides
+    @Weather
+    fun provideWeatherRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiClient.BASE_URL)
+            .baseUrl(ApiClient.WEATHER_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .build()
+    }
+
+    @Provides
+    @MidWeather
+    fun provideMidWeatherRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(ApiClient.MID_WEATHER_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()

@@ -2,6 +2,7 @@ package com.example.data.repository.weather.remote
 
 import android.util.Log
 import com.example.data.api.ApiInterface
+import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,5 +22,15 @@ class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): Weath
             Log.d("WeatherViewModel", "WeatherRemoteDataSourceImpl getWeather() flow 안")
             emit(apiInterface.getWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny))
         }
+    }
+
+    override suspend fun getMidTmpWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ): Flow<MidTmpWeatherResponse> {
+        TODO()
     }
 }

@@ -3,6 +3,7 @@ package com.example.data
 import android.util.Log
 import com.example.data.mapper.mapperToWeather
 import com.example.data.repository.weather.remote.WeatherRemoteDataSource
+import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.WeatherEntity
 import com.example.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
@@ -26,5 +27,15 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
                 emit(mapperToWeather(items = it.response.body.items))
             }
         }
+    }
+
+    override suspend fun getMidTmpWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ): Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> {
+        TODO("Not yet implemented")
     }
 }

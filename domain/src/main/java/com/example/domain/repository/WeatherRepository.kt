@@ -1,5 +1,6 @@
 package com.example.domain.repository
 
+import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -14,5 +15,13 @@ interface WeatherRepository {
         nx: String,
         ny: String
     ): Flow<List<WeatherEntity>>
+
+    suspend fun getMidTmpWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ) : Flow<List<MidWeatherEntity.MidTmpWeatherEntity>>
 
 }
