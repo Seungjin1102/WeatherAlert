@@ -5,13 +5,13 @@ data class MidWeatherEntity(
     val midSky: MidSkyWeatherEntity
 ) {
     data class MidTmpWeatherEntity(
-        val minTmp: String,
-        val maxTmp: String
+        val minTmp: Int,
+        val maxTmp: Int
     )
 
     data class MidSkyWeatherEntity(
-        val amPop: String,
-        val pmPop: String,
+        val amPop: Int,
+        val pmPop: Int,
         val amSky: String,
         val pmSky: String
     )

@@ -2,7 +2,9 @@ package com.example.weatheralert.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.WeatherEntity
+import com.example.domain.usecase.GetMidTmpUseCase
 import com.example.domain.usecase.GetWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
 import com.example.weatheralert.base.UiState
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val getWeatherUseCase: GetWeatherUseCase
+    private val getWeatherUseCase: GetWeatherUseCase,
+    private val getMidTmpWeatherUseCase: GetMidTmpUseCase
 ) : BaseViewModel() {
 
     private val _uiState: MutableStateFlow<UiState<List<WeatherEntity>>> = MutableStateFlow(UiState.Loading)
@@ -28,6 +31,9 @@ class WeatherViewModel @Inject constructor(
 
     private val _currentWeather: MutableStateFlow<WeatherEntity?> = MutableStateFlow(null)
     val currentWeather = _currentWeather.asStateFlow()
+
+    private val _midTmpWeatherUiState: MutableStateFlow<UiState<List<MidWeatherEntity.MidTmpWeatherEntity>>> = MutableStateFlow(UiState.Loading)
+    val midTmpWeatherUiState = _midTmpWeatherUiState.asStateFlow()
 
     fun getWeather(
         numOfRows: Int,
@@ -59,6 +65,20 @@ class WeatherViewModel @Inject constructor(
 //            newFlow.collect {
 //                Timber.d("flow test it: $it")
 //            }
+        }
+    }
+
+    fun getMidTmpWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ) {
+        viewModelScope.launch {
+            getMidTmpWeatherUseCase.execute(numOfRows, pageNo, dataType, regId, tmFc).collect {
+                Timber.d("기온 데이터 it: $it")
+            }
         }
     }
 

@@ -17,9 +17,7 @@ class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): Weath
         nx: String,
         ny: String
     ): Flow<WeatherResponse> {
-        Log.d("WeatherViewModel", "WeatherRemoteDataSourceImpl getWeather()")
         return flow {
-            Log.d("WeatherViewModel", "WeatherRemoteDataSourceImpl getWeather() flow 안")
             emit(apiInterface.getWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny))
         }
     }
@@ -31,6 +29,8 @@ class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): Weath
         regId: String,
         tmFc: String
     ): Flow<MidTmpWeatherResponse> {
-        TODO()
+        return flow {
+            emit(apiInterface.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc))
+        }
     }
 }

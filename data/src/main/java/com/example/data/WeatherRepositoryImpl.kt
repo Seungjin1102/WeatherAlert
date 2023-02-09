@@ -1,6 +1,7 @@
 package com.example.data
 
 import android.util.Log
+import com.example.data.mapper.mapperToMidTmpWeather
 import com.example.data.mapper.mapperToWeather
 import com.example.data.repository.weather.remote.WeatherRemoteDataSource
 import com.example.domain.model.MidWeatherEntity
@@ -20,10 +21,8 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
         nx: String,
         ny: String
     ): Flow<List<WeatherEntity>> {
-        Log.d("WeatherViewModel", "WeatherRepositoryImpl getWeather()")
         return flow {
             weatherRemoteDataSource.getWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).collect {
-                Log.d("WeatherViewModel", "it: $it")
                 emit(mapperToWeather(items = it.response.body.items))
             }
         }
@@ -36,6 +35,10 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
         regId: String,
         tmFc: String
     ): Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> {
-        TODO("Not yet implemented")
+        return flow {
+            weatherRemoteDataSource.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc).collect {
+                emit(mapperToMidTmpWeather(it.response.body.items))
+            }
+        }
     }
 }

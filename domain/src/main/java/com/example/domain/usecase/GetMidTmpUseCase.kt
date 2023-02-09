@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 class GetMidTmpUseCase @Inject constructor(private val repository: WeatherRepository) {
 
-//    suspend fun execute(
-//        numOfRows: Int,
-//        pageNo: Int,
-//        dataType: String,
-//        regId: String,
-//        tmFc: String
-//    ) : Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> = repository.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc)
+    suspend fun execute(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ) : Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> = repository.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc)
 }
