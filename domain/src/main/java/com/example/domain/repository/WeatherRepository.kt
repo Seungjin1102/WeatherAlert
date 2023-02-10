@@ -24,4 +24,12 @@ interface WeatherRepository {
         tmFc: String
     ) : Flow<List<MidWeatherEntity.MidTmpWeatherEntity>>
 
+    suspend fun getMidSkyWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ) : Flow<List<MidWeatherEntity.MidSkyWeatherEntity>>
+
 }

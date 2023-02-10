@@ -31,7 +31,7 @@ data class MidSkyWeatherResponse(
         val rnSt3Pm: Int,
         val rnSt4Am: Int,
         val rnSt4Pm: Int,
-        val rnSt5m: Int,
+        val rnSt5Am: Int,
         val rnSt5Pm: Int,
         val rnSt6Am: Int,
         val rnSt6Pm: Int,

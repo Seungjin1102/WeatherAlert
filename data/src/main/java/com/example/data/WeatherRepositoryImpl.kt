@@ -1,6 +1,6 @@
 package com.example.data
 
-import android.util.Log
+import com.example.data.mapper.mapperToMidSkyWeather
 import com.example.data.mapper.mapperToMidTmpWeather
 import com.example.data.mapper.mapperToWeather
 import com.example.data.repository.weather.remote.WeatherRemoteDataSource
@@ -41,4 +41,19 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
             }
         }
     }
+
+    override suspend fun getMidSkyWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ): Flow<List<MidWeatherEntity.MidSkyWeatherEntity>> {
+        return flow {
+            weatherRemoteDataSource.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc).collect {
+                emit(mapperToMidSkyWeather(it.response.body.items))
+            }
+        }
+    }
+
 }

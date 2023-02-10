@@ -1,6 +1,7 @@
 package com.example.data.api
 
 import com.example.data.BuildConfig
+import com.example.data.model.weather.MidSkyWeatherResponse
 import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.WeatherResponse
 import retrofit2.http.GET
@@ -27,5 +28,14 @@ interface ApiInterface {
         @Query("regId") regId: String,
         @Query("tmFc") tmFc: String
     ) : MidTmpWeatherResponse
+
+    @GET("MidFcstInfoService/getMidLandFcst?serviceKey=${BuildConfig.MID_WEATHER_API_KEY}")
+    suspend fun getMidSkyWeather(
+        @Query("numOfRows") numOfRows: Int,
+        @Query("pageNo") pageNo: Int,
+        @Query("dataType") dataType: String,
+        @Query("regId") regId: String,
+        @Query("tmFc") tmFc: String
+    ) : MidSkyWeatherResponse
 
 }

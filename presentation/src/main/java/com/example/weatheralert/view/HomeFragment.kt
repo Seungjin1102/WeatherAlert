@@ -65,13 +65,15 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
                 point.x.toString(),
                 point.y.toString()
             )
-            viewModel.getMidTmpWeather(
+
+            viewModel.getMidWeather(
                 30,
                 1,
                 "JSON",
                 "11B10101",
-                "202302091800"
+                "202302100600"
             )
+
             WeatherUtil.getReadExelTest()
         }
     }

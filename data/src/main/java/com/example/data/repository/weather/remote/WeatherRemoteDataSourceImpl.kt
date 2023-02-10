@@ -1,13 +1,14 @@
 package com.example.data.repository.weather.remote
 
-import android.util.Log
 import com.example.data.api.ApiInterface
+import com.example.data.model.weather.MidSkyWeatherResponse
 import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): WeatherRemoteDataSource {
+
     override suspend fun getWeather(
         numOfRows: Int,
         pageNo: Int,
@@ -33,4 +34,17 @@ class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): Weath
             emit(apiInterface.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc))
         }
     }
+
+    override suspend fun getMidSkyWeather(
+        numOfRows: Int,
+        pageNo: Int,
+        dataType: String,
+        regId: String,
+        tmFc: String
+    ): Flow<MidSkyWeatherResponse> {
+        return flow {
+            emit(apiInterface.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc))
+        }
+    }
+
 }
