@@ -1,13 +1,11 @@
 package com.example.data.repository.weather.remote
 
-import com.example.data.UiState
 import com.example.data.api.ApiInterface
 import com.example.data.exception.EmptyBodyException
 import com.example.data.exception.NetworkFailureException
 import com.example.data.model.weather.MidSkyWeatherResponse
 import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.ShortWeatherResponse
-import com.example.data.model.weather.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -48,17 +46,22 @@ class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): Weath
         }
     }
 
-
-
     override suspend fun getMidTmpWeather(
         numOfRows: Int,
         pageNo: Int,
         dataType: String,
         regId: String,
         tmFc: String
-    ): Flow<MidTmpWeatherResponse> {
+    ): Flow<List<MidTmpWeatherResponse>> {
         return flow {
-            emit(apiInterface.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc))
+            val response = apiInterface.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc)
+            if (response.isSuccessful) {
+                val midTmpWeatherResponseList: List<MidTmpWeatherResponse> =
+                    response.body()?.response?.body?.items?.item ?: throw EmptyBodyException("[${response.code()}] - ${response.raw()}")
+                emit(midTmpWeatherResponseList)
+            } else {
+                throw NetworkFailureException("[${response.code()}] - ${response.raw()}")
+            }
         }
     }
 
@@ -68,10 +71,43 @@ class WeatherRemoteDataSourceImpl(private val apiInterface: ApiInterface): Weath
         dataType: String,
         regId: String,
         tmFc: String
-    ): Flow<MidSkyWeatherResponse> {
+    ): Flow<List<MidSkyWeatherResponse>> {
         return flow {
-            emit(apiInterface.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc))
+            val response = apiInterface.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc)
+            if (response.isSuccessful) {
+                val midSkyWeatherResponseList: List<MidSkyWeatherResponse> =
+                    response.body()?.response?.body?.items?.item ?: throw EmptyBodyException("[${response.code()}] - ${response.raw()}")
+                emit(midSkyWeatherResponseList)
+            } else {
+                throw NetworkFailureException("[${response.code()}] - ${response.raw()}")
+            }
         }
     }
+
+
+
+//    override suspend fun getMidTmpWeather(
+//        numOfRows: Int,
+//        pageNo: Int,
+//        dataType: String,
+//        regId: String,
+//        tmFc: String
+//    ): Flow<MidTmpWeatherResponse> {
+//        return flow {
+//            emit(apiInterface.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc))
+//        }
+//    }
+//
+//    override suspend fun getMidSkyWeather(
+//        numOfRows: Int,
+//        pageNo: Int,
+//        dataType: String,
+//        regId: String,
+//        tmFc: String
+//    ): Flow<MidSkyWeatherResponse> {
+//        return flow {
+//            emit(apiInterface.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc))
+//        }
+//    }
 
 }

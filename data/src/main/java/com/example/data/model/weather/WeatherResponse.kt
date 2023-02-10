@@ -1,39 +1,32 @@
 package com.example.data.model.weather
 
-data class WeatherResponse(
-    val response: Response
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+
+@JsonClass(generateAdapter = true)
+data class WeatherResponse<T>(
+    @field:Json(name = "response") val response: Response<T>
 ) {
-    data class Response(
-        val header: Header,
-        val body: Body
+    data class Response<T>(
+        @field:Json(name = "header") val header: Header,
+        @field:Json(name = "body") val body: Body<T>
     )
 
     data class Header(
-        val resultCode: Int,
-        val resultMsg: String
+        @field:Json(name = "resultCode") val resultCode: Int,
+        @field:Json(name = "resultMsg") val resultMsg: String,
     )
 
-    data class Body(
-        val dataType: String,
-        val items: Items,
-        val pageNo: Int,
-        val numOfRows: Int,
-        val totalCount: Int
+    data class Body<T>(
+        @field:Json(name = "dataType") val dataType: String,
+        @field:Json(name = "items") val items: Items<T>,
+        @field:Json(name = "pageNo") val pageNo: Int,
+        @field:Json(name = "numOfRows") val numOfRows: Int,
+        @field:Json(name = "totalCount") val totalCount: Int,
     )
 
-    data class Items(
-        val item: List<Item>
-    )
-
-    data class Item(
-        val baseDate: String,
-        val baseTime: String,
-        val category: String,
-        val fcstDate: String,
-        val fcstTime: String,
-        val fcstValue: String,
-        val nx: Int,
-        val ny: Int
+    data class Items<T>(
+        @field:Json(name = "item") val item: List<T>
     )
 }
-

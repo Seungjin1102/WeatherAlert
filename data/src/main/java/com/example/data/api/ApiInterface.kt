@@ -5,7 +5,6 @@ import com.example.data.model.weather.MidSkyWeatherResponse
 import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.ShortWeatherResponse
 import com.example.data.model.weather.WeatherResponse
-import com.example.data.model.weather.WeatherResponseTest
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.Response
@@ -32,7 +31,7 @@ interface ApiInterface {
         @Query("base_time") base_time: String,
         @Query("nx") nx: String,
         @Query("ny") ny: String
-    ): Response<WeatherResponseTest<ShortWeatherResponse>>
+    ): Response<WeatherResponse<ShortWeatherResponse>>
 
     @GET("MidFcstInfoService/getMidTa?serviceKey=${BuildConfig.MID_WEATHER_API_KEY}")
     suspend fun getMidTmpWeather(
@@ -41,7 +40,7 @@ interface ApiInterface {
         @Query("dataType") dataType: String,
         @Query("regId") regId: String,
         @Query("tmFc") tmFc: String
-    ) : MidTmpWeatherResponse
+    ) : Response<WeatherResponse<MidTmpWeatherResponse>>
 
     @GET("MidFcstInfoService/getMidLandFcst?serviceKey=${BuildConfig.MID_WEATHER_API_KEY}")
     suspend fun getMidSkyWeather(
@@ -50,6 +49,6 @@ interface ApiInterface {
         @Query("dataType") dataType: String,
         @Query("regId") regId: String,
         @Query("tmFc") tmFc: String
-    ) : MidSkyWeatherResponse
+    ) : Response<WeatherResponse<MidSkyWeatherResponse>>
 
 }

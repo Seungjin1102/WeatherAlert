@@ -24,7 +24,7 @@ interface WeatherRemoteDataSource {
         dataType: String,
         regId: String,
         tmFc: String
-    ) : Flow<MidTmpWeatherResponse>
+    ) : Flow<List<MidTmpWeatherResponse>>
 
     suspend fun getMidSkyWeather(
         numOfRows: Int,
@@ -32,6 +32,22 @@ interface WeatherRemoteDataSource {
         dataType: String,
         regId: String,
         tmFc: String
-    ) : Flow<MidSkyWeatherResponse>
+    ) : Flow<List<MidSkyWeatherResponse>>
+
+//    suspend fun getMidTmpWeather(
+//        numOfRows: Int,
+//        pageNo: Int,
+//        dataType: String,
+//        regId: String,
+//        tmFc: String
+//    ) : Flow<MidTmpWeatherResponse>
+//
+//    suspend fun getMidSkyWeather(
+//        numOfRows: Int,
+//        pageNo: Int,
+//        dataType: String,
+//        regId: String,
+//        tmFc: String
+//    ) : Flow<MidSkyWeatherResponse>
 
 }

@@ -7,12 +7,12 @@ import retrofit2.http.Query
 
 interface MidWeatherInterface {
 
-    @GET("getMidTa?serviceKey=${BuildConfig.MID_WEATHER_API_KEY}")
-    suspend fun getMidTmpWeather(
-        @Query("numOfRows") numOfRows: Int,
-        @Query("pageNo") pageNo: Int,
-        @Query("dataType") dataType: String,
-        @Query("regId") regId: String,
-        @Query("tmFc") tmFc: String,
-    ): WeatherResponse
+//    @GET("getMidTa?serviceKey=${BuildConfig.MID_WEATHER_API_KEY}")
+//    suspend fun getMidTmpWeather(
+//        @Query("numOfRows") numOfRows: Int,
+//        @Query("pageNo") pageNo: Int,
+//        @Query("dataType") dataType: String,
+//        @Query("regId") regId: String,
+//        @Query("tmFc") tmFc: String,
+//    ): WeatherResponse
 }

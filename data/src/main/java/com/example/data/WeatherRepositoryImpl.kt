@@ -53,7 +53,7 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
     ): Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> {
         return flow {
             weatherRemoteDataSource.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc).collect {
-                emit(mapperToMidTmpWeather(it.response.body.items))
+                emit(mapperToMidTmpWeather(it))
             }
         }
     }
@@ -67,7 +67,7 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
     ): Flow<List<MidWeatherEntity.MidSkyWeatherEntity>> {
         return flow {
             weatherRemoteDataSource.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc).collect {
-                emit(mapperToMidSkyWeather(it.response.body.items))
+                emit(mapperToMidSkyWeather(it))
             }
         }
     }
