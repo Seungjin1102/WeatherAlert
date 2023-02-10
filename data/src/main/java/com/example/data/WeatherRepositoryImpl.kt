@@ -12,6 +12,22 @@ import kotlinx.coroutines.flow.flow
 
 class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDataSource): WeatherRepository {
 
+//    override suspend fun getWeather(
+//        numOfRows: Int,
+//        pageNo: Int,
+//        dataType: String,
+//        base_date: Int,
+//        base_time: String,
+//        nx: String,
+//        ny: String
+//    ): Flow<List<WeatherEntity>> {
+//        return flow {
+//            weatherRemoteDataSource.getWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).collect {
+//                emit(mapperToWeather(items = it.response.body.items))
+//            }
+//        }
+//    }
+
     override suspend fun getWeather(
         numOfRows: Int,
         pageNo: Int,
@@ -23,7 +39,7 @@ class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDa
     ): Flow<List<WeatherEntity>> {
         return flow {
             weatherRemoteDataSource.getWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).collect {
-                emit(mapperToWeather(items = it.response.body.items))
+                emit(mapperToWeather(items = it))
             }
         }
     }

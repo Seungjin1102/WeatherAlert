@@ -2,13 +2,35 @@ package com.example.data.mapper
 
 import com.example.data.model.weather.MidSkyWeatherResponse
 import com.example.data.model.weather.MidTmpWeatherResponse
+import com.example.data.model.weather.ShortWeatherResponse
 import com.example.data.model.weather.WeatherResponse
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.WeatherEntity
 
-fun mapperToWeather(items: WeatherResponse.Items): List<WeatherEntity> {
+//fun mapperToWeather(items: WeatherResponse.Items): List<WeatherEntity> {
+//    val weatherEntityList = mutableListOf<WeatherEntity>()
+//    val itemsList = items.item.toMutableList()
+//
+//    while (itemsList.size >= 12) {
+//        val item = itemsList.subList(0, 12)
+//        val weatherEntity = WeatherEntity(item[0].fcstDate, item[0].fcstTime, "", "", "", "")
+//
+//        item.filter { it.category == "TMP" }.map { weatherEntity.tmp = it.fcstValue }
+//        item.filter { it.category == "POP" }.map { weatherEntity.pop = it.fcstValue }
+//        item.filter { it.category == "SKY" }.map { weatherEntity.sky = it.fcstValue }
+//        item.filter { it.category == "PTY" }.map { weatherEntity.pty = it.fcstValue }
+//
+//        weatherEntityList.add(weatherEntity)
+//
+//        itemsList.removeAll(item)
+//    }
+//    return weatherEntityList.toList()
+//}
+
+
+fun mapperToWeather(items: List<ShortWeatherResponse>): List<WeatherEntity> {
     val weatherEntityList = mutableListOf<WeatherEntity>()
-    val itemsList = items.item.toMutableList()
+    val itemsList = items.toMutableList()
 
     while (itemsList.size >= 12) {
         val item = itemsList.subList(0, 12)
@@ -25,6 +47,7 @@ fun mapperToWeather(items: WeatherResponse.Items): List<WeatherEntity> {
     }
     return weatherEntityList.toList()
 }
+
 
 fun mapperToMidTmpWeather(items: MidTmpWeatherResponse.Items): List<MidWeatherEntity.MidTmpWeatherEntity> {
     val midTmpWeatherList = mutableListOf<MidWeatherEntity.MidTmpWeatherEntity>()

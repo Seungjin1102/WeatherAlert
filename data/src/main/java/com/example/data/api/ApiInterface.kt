@@ -3,11 +3,25 @@ package com.example.data.api
 import com.example.data.BuildConfig
 import com.example.data.model.weather.MidSkyWeatherResponse
 import com.example.data.model.weather.MidTmpWeatherResponse
+import com.example.data.model.weather.ShortWeatherResponse
 import com.example.data.model.weather.WeatherResponse
+import com.example.data.model.weather.WeatherResponseTest
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.Response
 
 interface ApiInterface {
+
+//    @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
+//    suspend fun getWeather(
+//        @Query("numOfRows") numOfRows: Int,
+//        @Query("pageNo") pageNo: Int,
+//        @Query("dataType") dataType: String,
+//        @Query("base_date") base_date: Int,
+//        @Query("base_time") base_time: String,
+//        @Query("nx") nx: String,
+//        @Query("ny") ny: String
+//    ): WeatherResponse
 
     @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
     suspend fun getWeather(
@@ -18,7 +32,7 @@ interface ApiInterface {
         @Query("base_time") base_time: String,
         @Query("nx") nx: String,
         @Query("ny") ny: String
-    ): WeatherResponse
+    ): Response<WeatherResponseTest<ShortWeatherResponse>>
 
     @GET("MidFcstInfoService/getMidTa?serviceKey=${BuildConfig.MID_WEATHER_API_KEY}")
     suspend fun getMidTmpWeather(
