@@ -1,6 +1,6 @@
 package com.example.domain.model
 
-data class WeatherEntity(
+data class ShortWeatherEntity(
     val date: String, //날짜
     val time: String, //시간
     var tmp: String, //기온

@@ -6,11 +6,10 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.example.domain.model.WeatherEntity
+import com.example.domain.model.MidWeatherEntity
+import com.example.domain.model.ShortWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.base.UiState
-import timber.log.Timber
 
 object WeatherBindingAdapter {
 
@@ -22,48 +21,38 @@ object WeatherBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("isShow")
-    fun View.isShow(uiState: UiState<List<WeatherEntity>>) {
+    fun View.isShow(uiState: UiState<List<ShortWeatherEntity>>) {
         this.visibility = if (uiState is UiState.Loading) View.GONE else View.VISIBLE
     }
 
     @JvmStatic
-    @BindingAdapter("currentWeather")
-    fun View.bindCurrentWeather(uiState: UiState<List<WeatherEntity>>) {
-        if (uiState is UiState.Success<*>) {
-            if (uiState.data is WeatherEntity) {
-                this.findViewById<TextView>(R.id.temperatures).text = uiState.data.tmp
-            }
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("todayItem")
-    fun RecyclerView.bindTodayItem(uiState: UiState<List<WeatherEntity>>) {
+    @BindingAdapter("shortWeatherItem")
+    fun RecyclerView.bindShortWeatherItem(uiState: UiState<List<ShortWeatherEntity>>) {
         if (uiState is UiState.Success) {
-            val adapter = TodayWeatherAdapter()
+            val adapter = ShortWeatherAdapter()
             this.adapter = adapter
             val currentDay = uiState.data.first().date
             adapter.submitList(uiState.data.filter { it.date.toInt() < currentDay.toInt() + 3 })
-            this.addItemDecoration(TodayWeatherAdapter.TodayWeatherItemDecoration())
+            this.addItemDecoration(ShortWeatherAdapter.ShortWeatherItemDecoration())
         }
     }
 
     @JvmStatic
-    @BindingAdapter("weeklyItem")
-    fun RecyclerView.bindWeeklyItem(uiState: UiState<List<WeatherEntity>>) {
-        if (uiState is UiState.Success) {
-            val adapter = WeeklyWeatherAdapter()
-            this.adapter = adapter
-            var lastDay = ""
-            val weeklyList = mutableListOf<WeatherEntity>()
-            uiState.data.forEach {
-                if (lastDay != it.date) {
-                    lastDay = it.date
-                    weeklyList.add(it)
-                }
-            }
-            adapter.submitList(weeklyList)
-        }
+    @BindingAdapter("midWeatherItem")
+    fun RecyclerView.bindMidWeatherItem(uiState: UiState<List<MidWeatherEntity>>) {
+//        if (uiState is UiState.Success) {
+//            val adapter = WeeklyWeatherAdapter()
+//            this.adapter = adapter
+//            var lastDay = ""
+//            val weeklyList = mutableListOf<ShortWeatherEntity>()
+//            uiState.data.forEach {
+//                if (lastDay != it.date) {
+//                    lastDay = it.date
+//                    weeklyList.add(it)
+//                }
+//            }
+//            adapter.submitList(weeklyList)
+//        }
     }
 
     @JvmStatic

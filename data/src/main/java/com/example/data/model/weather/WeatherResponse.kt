@@ -3,7 +3,6 @@ package com.example.data.model.weather
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
 @JsonClass(generateAdapter = true)
 data class WeatherResponse<T>(
     @field:Json(name = "response") val response: Response<T>

@@ -33,7 +33,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
+                viewModel.shortWeatherUiState.collect {
 //                    handleState(it)
                 }
             }
@@ -56,7 +56,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         val point = WeatherUtil.getLocation(requireActivity())
         if (point == null) Toast.makeText(requireContext(), "위치 정보 오류 발생!!", Toast.LENGTH_SHORT).show()
         else {
-            viewModel.getWeather(
+            viewModel.getShortWeather(
                 737,
                 1,
                 "JSON",
@@ -71,7 +71,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
                 1,
                 "JSON",
                 "11B10101",
-                "202302100600"
+                "202302121800"
             )
 
             WeatherUtil.getReadExelTest()

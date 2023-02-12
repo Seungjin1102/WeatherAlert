@@ -11,7 +11,7 @@
 
         <variable
             name="itemDecoration"
-            type="com.example.weatheralert.view.TodayWeatherAdapter.TodayWeatherViewHolder" />
+            type="com.example.weatheralert.view.ShortWeatherAdapter.ShortWeatherItemDecoration" />
 
     </data>
 
@@ -29,7 +29,7 @@
             android:id="@+id/progress_circular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            isLoading="@{viewmodel.uiState}"
+            isLoading="@{viewmodel.shortWeatherUiState}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,17 +44,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/current_weather"
+            android:id="@+id/today_weather"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            isShow="@{viewmodel.uiState"
+            isShow="@{viewmodel.shortWeatherUiState"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
             <include
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                layout="@layout/layout_current_weather"
+                layout="@layout/layout_today_weather"
                 app:address="@{viewmodel.addressState}"
                 app:viewmodel="@{viewmodel}"/>
         </LinearLayout>
@@ -71,15 +71,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/current_weather">
+            app:layout_constraintTop_toBottomOf="@id/today_weather">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                isShow="@{viewmodel.uiState}">
+                isShow="@{viewmodel.shortWeatherUiState}">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/today_card"
+                    android:id="@+id/short_weather_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
@@ -89,33 +89,33 @@
                     app:cardElevation="0dp"
                     app:layout_constraintTop_toTopOf="parent">
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/today_recyclerview"
+                        android:id="@+id/short_weather_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:padding="15dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        todayItem="@{viewmodel.uiState}" />
+                        shortWeatherItem="@{viewmodel.shortWeatherUiState}" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/mid_weather_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardCornerRadius="20dp"
                     app:cardBackgroundColor="@color/color_item_background"
                     app:cardElevation="0dp"
-                    app:layout_constraintTop_toBottomOf="@id/today_card"
-                    app:layout_constraintStart_toStartOf="@id/today_card"
-                    app:layout_constraintEnd_toEndOf="@id/today_card">
+                    app:layout_constraintTop_toBottomOf="@id/short_weather_card"
+                    app:layout_constraintStart_toStartOf="@id/short_weather_card"
+                    app:layout_constraintEnd_toEndOf="@id/short_weather_card">
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/weekly_recyclerview"
+                        android:id="@+id/mid_weather_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:padding="15dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        weeklyItem="@{viewmodel.uiState}" />
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

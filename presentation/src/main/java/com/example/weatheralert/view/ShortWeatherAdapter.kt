@@ -1,24 +1,20 @@
 package com.example.weatheralert.view
 
-import android.annotation.SuppressLint
 import android.graphics.Rect
-import android.util.Pair
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.model.WeatherEntity
+import com.example.domain.model.ShortWeatherEntity
 import com.example.weatheralert.R
-import com.example.weatheralert.databinding.ItemTodayWeatherBinding
+import com.example.weatheralert.databinding.ItemShortWeatherBinding
 
-class TodayWeatherAdapter : ListAdapter<WeatherEntity, TodayWeatherAdapter.TodayWeatherViewHolder>(diffUtil) {
+class ShortWeatherAdapter : ListAdapter<ShortWeatherEntity, ShortWeatherAdapter.ShortWeatherViewHolder>(diffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayWeatherViewHolder {
-        return TodayWeatherViewHolder(
-            ItemTodayWeatherBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShortWeatherViewHolder {
+        return ShortWeatherViewHolder(
+            ItemShortWeatherBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -26,15 +22,15 @@ class TodayWeatherAdapter : ListAdapter<WeatherEntity, TodayWeatherAdapter.Today
         )
     }
 
-    override fun onBindViewHolder(holder: TodayWeatherViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ShortWeatherViewHolder, position: Int) {
         holder.bind(getItem(position), position)
     }
 
 
-    class TodayWeatherViewHolder(
-        private val binding: ItemTodayWeatherBinding
+    class ShortWeatherViewHolder(
+        private val binding: ItemShortWeatherBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: WeatherEntity, position: Int) {
+        fun bind(item: ShortWeatherEntity, position: Int) {
             binding.time.text = if (item.time == "0000") {
                 if (position in 1..23) "내일"
                 else "모레"
@@ -77,19 +73,19 @@ class TodayWeatherAdapter : ListAdapter<WeatherEntity, TodayWeatherAdapter.Today
         }
     }
 
-    class TodayWeatherItemDecoration : RecyclerView.ItemDecoration() {
+    class ShortWeatherItemDecoration : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
             if (itemPosition != 0) outRect.left = 40
         }
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<WeatherEntity>() {
-            override fun areItemsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<ShortWeatherEntity>() {
+            override fun areItemsTheSame(oldItem: ShortWeatherEntity, newItem: ShortWeatherEntity): Boolean {
                 return oldItem.date == newItem.date
             }
 
-            override fun areContentsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
+            override fun areContentsTheSame(oldItem: ShortWeatherEntity, newItem: ShortWeatherEntity): Boolean {
                 return oldItem == newItem
             }
         }

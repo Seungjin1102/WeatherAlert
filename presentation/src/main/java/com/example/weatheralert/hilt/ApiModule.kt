@@ -1,9 +1,7 @@
 package com.example.weatheralert.hilt
 
-import android.util.Log
 import com.example.data.api.ApiClient
 import com.example.data.api.ApiInterface
-import com.example.data.api.MidWeatherInterface
 import com.example.weatheralert.BuildConfig
 import com.google.gson.GsonBuilder
 import com.orhanobut.logger.AndroidLogAdapter
@@ -18,7 +16,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)

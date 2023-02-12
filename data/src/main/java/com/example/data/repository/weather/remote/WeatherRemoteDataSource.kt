@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface WeatherRemoteDataSource {
 
-    suspend fun getWeather(
+    suspend fun getShortWeather(
         numOfRows: Int,
         pageNo: Int,
         dataType: String,
@@ -33,21 +33,5 @@ interface WeatherRemoteDataSource {
         regId: String,
         tmFc: String
     ) : Flow<List<MidSkyWeatherResponse>>
-
-//    suspend fun getMidTmpWeather(
-//        numOfRows: Int,
-//        pageNo: Int,
-//        dataType: String,
-//        regId: String,
-//        tmFc: String
-//    ) : Flow<MidTmpWeatherResponse>
-//
-//    suspend fun getMidSkyWeather(
-//        numOfRows: Int,
-//        pageNo: Int,
-//        dataType: String,
-//        regId: String,
-//        tmFc: String
-//    ) : Flow<MidSkyWeatherResponse>
 
 }

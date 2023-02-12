@@ -3,10 +3,10 @@ package com.example.weatheralert.viewmodel
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MidWeatherEntity
-import com.example.domain.model.WeatherEntity
+import com.example.domain.model.ShortWeatherEntity
 import com.example.domain.usecase.GetMidSkyUseCase
 import com.example.domain.usecase.GetMidTmpUseCase
-import com.example.domain.usecase.GetWeatherUseCase
+import com.example.domain.usecase.GetShortWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
 import com.example.weatheralert.base.UiState
 import com.example.weatheralert.util.WeatherUtil
@@ -21,25 +21,25 @@ import kotlin.math.min
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val getWeatherUseCase: GetWeatherUseCase,
+    private val getShortWeatherUseCase: GetShortWeatherUseCase,
     private val getMidTmpWeatherUseCase: GetMidTmpUseCase,
     private val getMidSkyUseCase: GetMidSkyUseCase
 ) : BaseViewModel() {
 
-    private val _uiState: MutableStateFlow<UiState<List<WeatherEntity>>> = MutableStateFlow(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _shortWeatherUiState: MutableStateFlow<UiState<List<ShortWeatherEntity>>> = MutableStateFlow(UiState.Loading)
+    val shortWeatherUiState = _shortWeatherUiState.asStateFlow()
 
     private val _addressState: MutableStateFlow<String> = MutableStateFlow("")
     val addressState = _addressState.asStateFlow()
 
-    private val _currentWeather: MutableStateFlow<WeatherEntity?> = MutableStateFlow(null)
+    private val _currentWeather: MutableStateFlow<ShortWeatherEntity?> = MutableStateFlow(null)
     val currentWeather = _currentWeather.asStateFlow()
 
     private val _midWeatherUiState: MutableStateFlow<UiState<List<MidWeatherEntity>>> = MutableStateFlow(UiState.Loading)
     val midWeatherUiState = _midWeatherUiState.asStateFlow()
 
     //단기예보 조회
-    fun getWeather(
+    fun getShortWeather(
         numOfRows: Int,
         pageNo: Int,
         dataType: String,
@@ -49,15 +49,15 @@ class WeatherViewModel @Inject constructor(
         ny: String
     ) {
         viewModelScope.launch {
-            getWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).onStart {
+            getShortWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).onStart {
                 Timber.d("단기예보 flow start")
-                _uiState.value = UiState.Loading
+                _shortWeatherUiState.value = UiState.Loading
             }.catch {
                 Timber.d("단기예보 flow catch")
-                _uiState.value = UiState.Error(null)
+                _shortWeatherUiState.value = UiState.Error(null)
             }.collect {
                 Timber.d("단기예보 collect it: $it")
-                _uiState.value = UiState.Success(it)
+                _shortWeatherUiState.value = UiState.Success(it)
                 _currentWeather.value = it.first()
             }
         }

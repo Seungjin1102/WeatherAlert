@@ -11,19 +11,8 @@ import retrofit2.Response
 
 interface ApiInterface {
 
-//    @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
-//    suspend fun getWeather(
-//        @Query("numOfRows") numOfRows: Int,
-//        @Query("pageNo") pageNo: Int,
-//        @Query("dataType") dataType: String,
-//        @Query("base_date") base_date: Int,
-//        @Query("base_time") base_time: String,
-//        @Query("nx") nx: String,
-//        @Query("ny") ny: String
-//    ): WeatherResponse
-
     @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
-    suspend fun getWeather(
+    suspend fun getShortWeather(
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") pageNo: Int,
         @Query("dataType") dataType: String,
