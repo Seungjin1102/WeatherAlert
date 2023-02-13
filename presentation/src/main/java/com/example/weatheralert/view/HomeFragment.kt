@@ -20,6 +20,10 @@ import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @AndroidEntryPoint
 class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout.fragment_home) {
@@ -48,6 +52,9 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
     }
 
     private fun getWeather() {
+
+
+        Timber.d("시간: ${WeatherUtil.getMidWeatherTime()}")
         if (!isCheckPermission) {
             Toast.makeText(requireContext(), "위치 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
             return
@@ -56,25 +63,24 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
         val point = WeatherUtil.getLocation(requireActivity())
         if (point == null) Toast.makeText(requireContext(), "위치 정보 오류 발생!!", Toast.LENGTH_SHORT).show()
         else {
-            viewModel.getShortWeather(
-                737,
-                1,
-                "JSON",
-                WeatherUtil.getCurrentDay(),
-                WeatherUtil.getCurrentTime(),
-                point.x.toString(),
-                point.y.toString()
-            )
-
-            viewModel.getMidWeather(
-                30,
-                1,
-                "JSON",
-                "11B10101",
-                "202302121800"
-            )
-
-            WeatherUtil.getReadExelTest()
+//            viewModel.getShortWeather(
+//                737,
+//                1,
+//                "JSON",
+//                WeatherUtil.getShorWeatherDay(),
+//                WeatherUtil.getShortWeatherTime(),
+//                point.x.toString(),
+//                point.y.toString()
+//            )
+//
+//            viewModel.getMidWeather(
+//                30,
+//                1,
+//                "JSON",
+//                "11B10101",
+//                "11B00000",
+//                WeatherUtil.getMidWeatherTime()
+//            )
         }
     }
 

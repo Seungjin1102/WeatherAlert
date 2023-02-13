@@ -15,20 +15,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.coroutines.resume
 
 object WeatherUtil {
 
     var locationManager: LocationManager? = null
 
-    fun getCurrentDay(): Int {
+    fun getShorWeatherDay(): Int {
         val current = LocalDateTime.now()
         return current.format(DateTimeFormatter.ISO_DATE).replace("-", "").toInt()
     }
 
-    fun getCurrentTime(): String {
+    /**
+     * 단기예보, 중기예보 시간 기준이 다르므로 다른 메소드를 사용
+     */
+    fun getShortWeatherTime(): String {
         val current = LocalDateTime.now()
         val formatted = current.format(DateTimeFormatter.ISO_LOCAL_TIME).replace(":", "").substring(0, 2) + "00"
         var time = 0
@@ -40,6 +45,34 @@ object WeatherUtil {
 
         return if (time.toString().length < 4) "0$time"
         else time.toString()
+    }
+
+    fun getMidWeatherTime(): String {
+        val current = LocalDateTime.now()
+        val formatted = current.format(DateTimeFormatter.ISO_LOCAL_TIME).replace(":", "").substring(0, 2) + "00"
+
+        return when(formatted.toInt()) {
+            in 0..600 -> {
+                current.minusDays(1).run {
+                    this.year.toString() + plusZero(this.month.value) + plusZero(this.dayOfMonth) + "1800"
+                }
+            }
+            in 601..1800 -> {
+                current.run {
+                    this.year.toString() + plusZero(this.month.value) + plusZero(this.dayOfMonth) + "0600"
+                }
+            }
+            else -> {
+                current.run {
+                    this.year.toString() + plusZero(this.month.value) + plusZero(this.dayOfMonth) + "1800"
+                }
+            }
+        }
+    }
+
+    private fun plusZero(num: Int): String {
+        return if (num < 10) "0$num"
+        else num.toString()
     }
 
     /**
@@ -144,22 +177,42 @@ object WeatherUtil {
         }
 
         val address = result[0].let {
-            it.adminArea + " " + it.subLocality + " " + it.thoroughfare
+            it.adminArea + " " + it.locality + " " + it.subLocality + " " + it.thoroughfare
         }
         Timber.d("address: $address")
 
         return flow { emit(address) }
     }
 
-    fun getReadExelTest() {
-        val list = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
-        val address = "군산"
-        var result = ""
-        list.forEachIndexed { index, s ->
-            if (s.split("|").first() == address) result = s.split("|").last()
-        }
-        Timber.d("result: $result")
+    private fun isSpecialCity(city: String): Boolean {
+//        val specialCityList = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).map {
+//            it.split("|").first()
+//        }
+        return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).contains(city)
+    }
 
+    fun getMidTmpRegId(address: String): String {
+//        val wordList = address.split(" ")
+        val wordList = "경기도 부천시 소사구 매봉산로 18".split(" ")
+        val firstWord = wordList[0]
+        val secondWord = wordList[1].substring(0, wordList[1].length - 1)
+
+        Timber.d("firstWord: $firstWord, secondWord: $secondWord")
+        if (isSpecialCity(firstWord)) {
+            val regId = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
+                .find {
+                    it.split("|").first() == firstWord
+                }?.split("|")?.last()
+            Timber.d("regId: $regId")
+        } else {
+            Timber.d("일반시")
+            val regId = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
+                .find {
+                    it.split("|").first() == secondWord
+                }?.split("|")?.last()
+            Timber.d("regId: $regId")
+        }
+        return "tes"
     }
 
 }

@@ -53,7 +53,7 @@ class WeatherViewModel @Inject constructor(
                 Timber.d("단기예보 flow start")
                 _shortWeatherUiState.value = UiState.Loading
             }.catch {
-                Timber.d("단기예보 flow catch")
+                Timber.d("단기예보 flow catch it: $it")
                 _shortWeatherUiState.value = UiState.Error(null)
             }.collect {
                 Timber.d("단기예보 collect it: $it")
@@ -68,12 +68,13 @@ class WeatherViewModel @Inject constructor(
         numOfRows: Int,
         pageNo: Int,
         dataType: String,
-        regId: String,
+        tmpRegId: String,
+        skyRegId: String,
         tmFc: String
     ) {
         viewModelScope.launch {
-            val midUiStateFlow = getMidTmpWeatherUseCase.execute(numOfRows, pageNo, dataType, regId, tmFc)
-                .zip(getMidSkyWeatherUseCase.execute(numOfRows, pageNo, dataType, regId, tmFc)) { tmpFlow, skyFlow ->
+            val midUiStateFlow = getMidTmpWeatherUseCase.execute(numOfRows, pageNo, dataType, tmpRegId, tmFc)
+                .zip(getMidSkyWeatherUseCase.execute(numOfRows, pageNo, dataType, skyRegId, tmFc)) { tmpFlow, skyFlow ->
                     val resultList = mutableListOf<MidWeatherEntity>()
                     for (i in 0 until min(tmpFlow.size, skyFlow.size)) {
                         resultList.add(MidWeatherEntity(tmpFlow[i], skyFlow[i]))
@@ -85,7 +86,7 @@ class WeatherViewModel @Inject constructor(
                 Timber.d("중기예보 flow start")
                 _midWeatherUiState.value = UiState.Loading
             }.catch {
-                Timber.d("중기예보 flow catch")
+                Timber.d("중기예보 flow catch it: $it")
                 _midWeatherUiState.value = UiState.Error(null)
             }.collect {
                 Timber.d("중기에보 데이터 collect: $it")
@@ -99,6 +100,25 @@ class WeatherViewModel @Inject constructor(
             WeatherUtil.susGetAddress(context as WeatherActivity).collect {
                 Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
                 _addressState.value = it
+
+//                getShortWeather(
+//                    737,
+//                    1,
+//                    "JSON",
+//                    WeatherUtil.getShorWeatherDay(),
+//                    WeatherUtil.getShortWeatherTime(),
+//                    point.x.toString(),
+//                    point.y.toString()
+//                )
+
+                getMidWeather(
+                    30,
+                    1,
+                    "JSON",
+                    WeatherUtil.getMidTmpRegId(it),
+                    "11B00000",
+                    WeatherUtil.getMidWeatherTime()
+                )
             }
         }
     }
