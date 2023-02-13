@@ -5,7 +5,7 @@ import com.example.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetMidTmpUseCase @Inject constructor(private val repository: WeatherRepository) {
+class GetMidSkyWeatherUseCase @Inject constructor(private val repository: WeatherRepository) {
 
     suspend fun execute(
         numOfRows: Int,
@@ -13,5 +13,6 @@ class GetMidTmpUseCase @Inject constructor(private val repository: WeatherReposi
         dataType: String,
         regId: String,
         tmFc: String
-    ) : Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> = repository.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc)
+    ) : Flow<List<MidWeatherEntity.MidSkyWeatherEntity>> = repository.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc)
+
 }

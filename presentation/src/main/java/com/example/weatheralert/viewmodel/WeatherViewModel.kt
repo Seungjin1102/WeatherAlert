@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
-import com.example.domain.usecase.GetMidSkyUseCase
-import com.example.domain.usecase.GetMidTmpUseCase
+import com.example.domain.usecase.GetMidSkyWeatherUseCase
+import com.example.domain.usecase.GetMidTmpWeatherUseCase
 import com.example.domain.usecase.GetShortWeatherUseCase
 import com.example.weatheralert.base.BaseViewModel
 import com.example.weatheralert.base.UiState
@@ -22,8 +22,8 @@ import kotlin.math.min
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val getShortWeatherUseCase: GetShortWeatherUseCase,
-    private val getMidTmpWeatherUseCase: GetMidTmpUseCase,
-    private val getMidSkyUseCase: GetMidSkyUseCase
+    private val getMidTmpWeatherUseCase: GetMidTmpWeatherUseCase,
+    private val getMidSkyWeatherUseCase: GetMidSkyWeatherUseCase
 ) : BaseViewModel() {
 
     private val _shortWeatherUiState: MutableStateFlow<UiState<List<ShortWeatherEntity>>> = MutableStateFlow(UiState.Loading)
@@ -73,7 +73,7 @@ class WeatherViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val midUiStateFlow = getMidTmpWeatherUseCase.execute(numOfRows, pageNo, dataType, regId, tmFc)
-                .zip(getMidSkyUseCase.execute(numOfRows, pageNo, dataType, regId, tmFc)) { tmpFlow, skyFlow ->
+                .zip(getMidSkyWeatherUseCase.execute(numOfRows, pageNo, dataType, regId, tmFc)) { tmpFlow, skyFlow ->
                     val resultList = mutableListOf<MidWeatherEntity>()
                     for (i in 0 until min(tmpFlow.size, skyFlow.size)) {
                         resultList.add(MidWeatherEntity(tmpFlow[i], skyFlow[i]))
