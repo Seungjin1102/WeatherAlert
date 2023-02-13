@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.annotation.meta.When
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -97,26 +98,31 @@ class WeatherViewModel @Inject constructor(
 
     fun getAddress(context: Context) {
         viewModelScope.launch {
-            WeatherUtil.susGetAddress(context as WeatherActivity).collect {
+            WeatherUtil.getAddress(context as WeatherActivity).collect {
                 Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
                 _addressState.value = it
 
-//                getShortWeather(
-//                    737,
-//                    1,
-//                    "JSON",
-//                    WeatherUtil.getShorWeatherDay(),
-//                    WeatherUtil.getShortWeatherTime(),
-//                    point.x.toString(),
-//                    point.y.toString()
-//                )
+                val point = WeatherUtil.getLocation(context)
+
+                getShortWeather(
+                    737,
+                    1,
+                    "JSON",
+                    WeatherUtil.getShorWeatherDay(),
+                    WeatherUtil.getShortWeatherTime(),
+                    point!!.x.toString(),
+                    point!!.y.toString()
+                )
+
+//                Timber.d("WeatherUtil.getMidTmpRegId(it): ${WeatherUtil.getMidTmpRegId(it)}")
+//                Timber.d("getMidSkyRegId: ${WeatherUtil.getMidSkyRegId("충청북도 제천시 단양읍")}")
 
                 getMidWeather(
                     30,
                     1,
                     "JSON",
                     WeatherUtil.getMidTmpRegId(it),
-                    "11B00000",
+                    WeatherUtil.getMidSkyRegId(it),
                     WeatherUtil.getMidWeatherTime()
                 )
             }

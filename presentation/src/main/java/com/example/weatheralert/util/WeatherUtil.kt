@@ -151,7 +151,7 @@ object WeatherUtil {
      * 현재 주소 return
      * 시, 구, 군 까지 표시
      */
-    suspend fun susGetAddress(activity: Activity): Flow<String> {
+    suspend fun getAddress(activity: Activity): Flow<String> {
         val geocoder = Geocoder(activity)
         val location = getLatLng(activity)
 
@@ -185,34 +185,28 @@ object WeatherUtil {
     }
 
     private fun isSpecialCity(city: String): Boolean {
-//        val specialCityList = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).map {
-//            it.split("|").first()
-//        }
         return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).contains(city)
     }
 
     fun getMidTmpRegId(address: String): String {
-//        val wordList = address.split(" ")
-        val wordList = "경기도 부천시 소사구 매봉산로 18".split(" ")
+        val wordList = address.split(" ")
+//        val wordList = "경기도 부천시 소사구 매봉산로 18".split(" ")
         val firstWord = wordList[0]
         val secondWord = wordList[1].substring(0, wordList[1].length - 1)
 
-        Timber.d("firstWord: $firstWord, secondWord: $secondWord")
-        if (isSpecialCity(firstWord)) {
-            val regId = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
+        Timber.d("address: $address, firstWord: $firstWord, secondWord: $secondWord")
+
+        return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
                 .find {
-                    it.split("|").first() == firstWord
-                }?.split("|")?.last()
-            Timber.d("regId: $regId")
-        } else {
-            Timber.d("일반시")
-            val regId = WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
-                .find {
-                    it.split("|").first() == secondWord
-                }?.split("|")?.last()
-            Timber.d("regId: $regId")
-        }
-        return "tes"
+                    it.split("|").first() == if (isSpecialCity(firstWord)) firstWord else secondWord
+                }?.split("|")?.last() ?: ""
+    }
+
+    fun getMidSkyRegId(address: String): String {
+        val city = address.split(" ").first()
+        return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).find {
+            it.split("|").first() == city
+        }?.split("|")?.last() ?: ""
     }
 
 }
