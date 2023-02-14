@@ -10,6 +10,7 @@ import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.base.UiState
+import com.example.weatheralert.base.successOrNull
 
 object WeatherBindingAdapter {
 
@@ -28,11 +29,12 @@ object WeatherBindingAdapter {
     @JvmStatic
     @BindingAdapter("shortWeatherItem")
     fun RecyclerView.bindShortWeatherItem(uiState: UiState<List<ShortWeatherEntity>>) {
-        if (uiState is UiState.Success) {
+        uiState.successOrNull()?.let { data ->
             val adapter = ShortWeatherAdapter()
             this.adapter = adapter
-            val currentDay = uiState.data.first().date
-            adapter.submitList(uiState.data.filter { it.date.toInt() < currentDay.toInt() + 3 })
+            val currentDay = data.first().date
+
+            adapter.submitList(data.filter { it.date.toInt() < currentDay.toInt() + 3})
             this.addItemDecoration(ShortWeatherAdapter.ShortWeatherItemDecoration())
         }
     }

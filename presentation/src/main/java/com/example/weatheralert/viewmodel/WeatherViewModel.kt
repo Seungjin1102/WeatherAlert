@@ -55,7 +55,7 @@ class WeatherViewModel @Inject constructor(
                 _shortWeatherUiState.value = UiState.Loading
             }.catch {
                 Timber.d("단기예보 flow catch it: $it")
-                _shortWeatherUiState.value = UiState.Error(null)
+                _shortWeatherUiState.value = UiState.Error(it)
             }.collect {
                 Timber.d("단기예보 collect it: $it")
                 _shortWeatherUiState.value = UiState.Success(it)
@@ -88,7 +88,7 @@ class WeatherViewModel @Inject constructor(
                 _midWeatherUiState.value = UiState.Loading
             }.catch {
                 Timber.d("중기예보 flow catch it: $it")
-                _midWeatherUiState.value = UiState.Error(null)
+                _midWeatherUiState.value = UiState.Error(it)
             }.collect {
                 Timber.d("중기에보 데이터 collect: $it")
                 _midWeatherUiState.value = UiState.Success(it)
