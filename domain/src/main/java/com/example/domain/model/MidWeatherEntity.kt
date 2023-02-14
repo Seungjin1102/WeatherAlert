@@ -2,7 +2,7 @@ package com.example.domain.model
 
 data class MidWeatherEntity(
     val midTmp: MidTmpWeatherEntity,
-    val midSky: MidSkyWeatherEntity
+    val midSky: MidSkyWeatherEntity,
 ) {
     data class MidTmpWeatherEntity(
         val minTmp: Int,

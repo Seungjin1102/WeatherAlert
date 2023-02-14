@@ -13,14 +13,58 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="월요일"/>
 
         <TextView
+            android:id="@+id/pop_am"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingEnd="2dp"
+            app:layout_constraintTop_toTopOf="@id/tmp"
+            app:layout_constraintBottom_toBottomOf="@id/tmp"
+            app:layout_constraintEnd_toStartOf="@id/sky_am"
+            tools:text="30%"/>
+
+        <ImageView
+            android:id="@+id/sky_am"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintTop_toTopOf="@id/tmp"
+            app:layout_constraintBottom_toBottomOf="@id/tmp"
+            app:layout_constraintEnd_toStartOf="@id/pop_pm"
+            tools:src="@drawable/sun_cloudy" />
+        
+        <TextView
+            android:id="@+id/pop_pm"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingEnd="2dp"
+            app:layout_constraintTop_toTopOf="@id/tmp"
+            app:layout_constraintBottom_toBottomOf="@id/tmp"
+            app:layout_constraintEnd_toStartOf="@id/sky_pm"
+            tools:text="30%"/>
+        
+        <ImageView
+            android:id="@+id/sky_pm"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintTop_toTopOf="@id/tmp"
+            app:layout_constraintBottom_toBottomOf="@id/tmp"
+            app:layout_constraintEnd_toStartOf="@id/tmp"
+            tools:src="@drawable/sun_cloudy" />
+
+        <TextView
             android:id="@+id/tmp"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="-2° / 5°"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

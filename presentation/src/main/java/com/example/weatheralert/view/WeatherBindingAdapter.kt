@@ -64,6 +64,14 @@ object WeatherBindingAdapter {
 //            }
 //            adapter.submitList(weeklyList)
 //        }
+
+        uiState.successOrNull()?.let {
+            val adapter = MidWeatherAdapter()
+            this.adapter = adapter
+
+            adapter.submitList(it)
+        }
+
     }
 
     @JvmStatic
