@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.annotation.meta.When
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -102,36 +101,40 @@ class WeatherViewModel @Inject constructor(
                 Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
                 _addressState.value = it
 
+                //point를 못가져오면 단기예보 처리 불가 별도의 예외처리 필요
                 val point = WeatherUtil.getLocation(context)
 
-                getShortWeather(
-                    737,
-                    1,
-                    "JSON",
-                    WeatherUtil.getShorWeatherDay(),
-                    WeatherUtil.getShortWeatherTime(),
-                    point!!.x.toString(),
-                    point!!.y.toString()
-                )
+                if (point != null) {
+                    getShortWeather(
+                        737,
+                        1,
+                        "JSON",
+                        WeatherUtil.getShorWeatherDay(),
+                        WeatherUtil.getShortWeatherTime(),
+                        point.x.toString(),
+                        point.y.toString()
+                    )
+                } else {
+                    _shortWeatherUiState.value = UiState.Error(Throwable("단기예보 GPS 관련 에러 발생", null))
+                }
 
-//                Timber.d("WeatherUtil.getMidTmpRegId(it): ${WeatherUtil.getMidTmpRegId(it)}")
-//                Timber.d("getMidSkyRegId: ${WeatherUtil.getMidSkyRegId("충청북도 제천시 단양읍")}")
+                val tmpRegId = WeatherUtil.getMidTmpRegId(it)
+                val skyRegId = WeatherUtil.getMidSkyRegId(it)
 
-                getMidWeather(
-                    30,
-                    1,
-                    "JSON",
-                    WeatherUtil.getMidTmpRegId(it),
-                    WeatherUtil.getMidSkyRegId(it),
-                    WeatherUtil.getMidWeatherTime()
-                )
+                if (tmpRegId.isNotEmpty() && skyRegId.isNotEmpty()) {
+                    getMidWeather(
+                        30,
+                        1,
+                        "JSON",
+                        tmpRegId,
+                        skyRegId,
+                        WeatherUtil.getMidWeatherTime()
+                    )
+                } else {
+                    _midWeatherUiState.value = UiState.Error(Throwable("중기예보 지역코드 관련 에러 발생", null))
+                }
             }
         }
     }
 
-//    sealed class UiState<out T> {
-//        object Loading: UiState<Nothing>()
-//        data class Success<T>(val data: T): UiState<T>()
-//        data class Error(val errorCode: String = ""): UiState<Nothing>()
-//    }
 }

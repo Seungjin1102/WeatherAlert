@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.MidWeatherEntity
@@ -24,6 +25,14 @@ object WeatherBindingAdapter {
     @BindingAdapter("isShow")
     fun View.isShow(uiState: UiState<List<ShortWeatherEntity>>) {
         this.visibility = if (uiState is UiState.Loading) View.GONE else View.VISIBLE
+    }
+
+    @JvmStatic
+    @BindingAdapter("toast")
+    fun View.bindToast(throwable: Throwable?) {
+        throwable?.message?.let { errorMessage ->
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
     @JvmStatic

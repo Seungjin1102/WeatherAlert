@@ -52,36 +52,12 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
     }
 
     private fun getWeather() {
-
-
-        Timber.d("시간: ${WeatherUtil.getMidWeatherTime()}")
         if (!isCheckPermission) {
             Toast.makeText(requireContext(), "위치 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val point = WeatherUtil.getLocation(requireActivity())
-        if (point == null) Toast.makeText(requireContext(), "위치 정보 오류 발생!!", Toast.LENGTH_SHORT).show()
-        else {
-//            viewModel.getShortWeather(
-//                737,
-//                1,
-//                "JSON",
-//                WeatherUtil.getShorWeatherDay(),
-//                WeatherUtil.getShortWeatherTime(),
-//                point.x.toString(),
-//                point.y.toString()
-//            )
-//
-//            viewModel.getMidWeather(
-//                30,
-//                1,
-//                "JSON",
-//                "11B10101",
-//                "11B00000",
-//                WeatherUtil.getMidWeatherTime()
-//            )
-        }
+        viewModel.getAddress(requireActivity())
     }
 
     private fun requestPermission() {
@@ -89,10 +65,12 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
                     isCheckPermission = true
+//                    getWeather()
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        viewModel.getAddress(requireActivity())
+//                    }
                     getWeather()
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewModel.getAddress(requireActivity())
-                    }
+//                    viewModel.getAddress(requireActivity())
                     Timber.d("코루틴 밖")
                 }
 
