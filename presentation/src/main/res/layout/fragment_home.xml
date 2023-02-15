@@ -12,8 +12,12 @@
             type="com.example.weatheralert.viewmodel.WeatherViewModel" />
 
         <variable
-            name="itemDecoration"
+            name="shortWeatherItemDecoration"
             type="com.example.weatheralert.view.ShortWeatherAdapter.ShortWeatherItemDecoration" />
+
+        <variable
+            name="midWeatherItemDecoration"
+            type="com.example.weatheralert.view.MidWeatherAdapter.MidWeatherItemDecoration" />
 
     </data>
 

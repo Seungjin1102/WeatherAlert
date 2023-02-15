@@ -1,6 +1,9 @@
 package com.example.weatheralert.view
 
+import android.graphics.Rect
+import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,6 +12,7 @@ import com.example.domain.model.MidWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.databinding.ItemMidWeatherBinding
 import com.example.weatheralert.util.ResourceUtil
+
 
 class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWeatherViewHolder>(diffUtil) {
 
@@ -32,11 +36,12 @@ class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWea
 
         fun bind(item: MidWeatherEntity) {
             binding.day.text = converterDay(item.day)
-            binding.tmp.text = "${item.midTmp.minTmp}° / ${item.midTmp.maxTmp}"
             binding.skyPm.setImageResource(setSkyImage(item.midSky.pmSky))
             binding.popPm.text = "${item.midSky.pmPop}%"
             binding.skyAm.setImageResource(setSkyImage(item.midSky.amSky))
             binding.popAm.text = "${item.midSky.amPop}%"
+            binding.tmpAm.text = "${item.midTmp.minTmp}°"
+            binding.tmpPm.text = "${item.midTmp.maxTmp}°"
         }
 
         private fun setSkyImage(sky: String): Int  {
@@ -61,6 +66,18 @@ class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWea
             })
         }
     }
+
+    class MidWeatherItemDecoration : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
+            if (itemPosition != 0) outRect.top = ResourceUtil.dpToPx(5)
+            if (itemPosition == parent.adapter!!.itemCount - 1) {
+                parent.getChildAt(itemPosition).findViewById<View>(R.id.divider)
+                    .visibility = View.GONE
+            }
+        }
+    }
+
+
 
 
 

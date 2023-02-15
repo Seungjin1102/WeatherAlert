@@ -51,27 +51,13 @@ object WeatherBindingAdapter {
     @JvmStatic
     @BindingAdapter("midWeatherItem")
     fun RecyclerView.bindMidWeatherItem(uiState: UiState<List<MidWeatherEntity>>) {
-//        if (uiState is UiState.Success) {
-//            val adapter = WeeklyWeatherAdapter()
-//            this.adapter = adapter
-//            var lastDay = ""
-//            val weeklyList = mutableListOf<ShortWeatherEntity>()
-//            uiState.data.forEach {
-//                if (lastDay != it.date) {
-//                    lastDay = it.date
-//                    weeklyList.add(it)
-//                }
-//            }
-//            adapter.submitList(weeklyList)
-//        }
-
         uiState.successOrNull()?.let {
             val adapter = MidWeatherAdapter()
             this.adapter = adapter
 
             adapter.submitList(it)
+            this.addItemDecoration(MidWeatherAdapter.MidWeatherItemDecoration())
         }
-
     }
 
     @JvmStatic
