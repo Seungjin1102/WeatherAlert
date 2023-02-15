@@ -5,9 +5,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.domain.model.MidWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.databinding.ItemMidWeatherBinding
@@ -69,10 +72,24 @@ class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWea
 
     class MidWeatherItemDecoration : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
+            val divider = parent.getChildAt(itemPosition).findViewById<View>(R.id.divider)
+            val constraintLayout = parent.getChildAt(itemPosition).findViewById<ConstraintLayout>(R.id.constraint_layout)
+            val layoutContent = parent.getChildAt(itemPosition).findViewById<ConstraintLayout>(R.id.layout_content)
+
+            val constraints = ConstraintSet()
+            constraints.clone(constraintLayout)
+            constraints.connect(
+                divider.id,
+                ConstraintSet.TOP,
+                layoutContent.id,
+                ConstraintSet.BOTTOM,
+                ResourceUtil.dpToPx(5)
+            )
+            constraints.applyTo(constraintLayout)
+
             if (itemPosition != 0) outRect.top = ResourceUtil.dpToPx(5)
             if (itemPosition == parent.adapter!!.itemCount - 1) {
-                parent.getChildAt(itemPosition).findViewById<View>(R.id.divider)
-                    .visibility = View.GONE
+                divider.visibility = View.GONE
             }
         }
     }
