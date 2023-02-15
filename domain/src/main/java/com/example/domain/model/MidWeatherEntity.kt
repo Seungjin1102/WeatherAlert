@@ -3,6 +3,7 @@ package com.example.domain.model
 data class MidWeatherEntity(
     val midTmp: MidTmpWeatherEntity,
     val midSky: MidSkyWeatherEntity,
+    val day: String = ""
 ) {
     data class MidTmpWeatherEntity(
         val minTmp: Int,

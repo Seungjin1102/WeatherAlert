@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -39,7 +40,7 @@ class WeatherViewModel @Inject constructor(
     val midWeatherUiState = _midWeatherUiState.asStateFlow()
 
     //단기예보 조회
-    fun getShortWeather(
+    private fun getShortWeather(
         numOfRows: Int,
         pageNo: Int,
         dataType: String,
@@ -64,7 +65,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     //중기예보 조회
-    fun getMidWeather(
+    private fun getMidWeather(
         numOfRows: Int,
         pageNo: Int,
         dataType: String,
@@ -76,8 +77,10 @@ class WeatherViewModel @Inject constructor(
             val midUiStateFlow = getMidTmpWeatherUseCase.execute(numOfRows, pageNo, dataType, tmpRegId, tmFc)
                 .zip(getMidSkyWeatherUseCase.execute(numOfRows, pageNo, dataType, skyRegId, tmFc)) { tmpFlow, skyFlow ->
                     val resultList = mutableListOf<MidWeatherEntity>()
+                    val today = LocalDateTime.now()
                     for (i in 0 until min(tmpFlow.size, skyFlow.size)) {
-                        resultList.add(MidWeatherEntity(tmpFlow[i], skyFlow[i]))
+                        resultList.add(MidWeatherEntity(tmpFlow[i], skyFlow[i],
+                            today.plusDays((3 + i).toLong()).dayOfWeek.name))
                     }
                     resultList
                 }

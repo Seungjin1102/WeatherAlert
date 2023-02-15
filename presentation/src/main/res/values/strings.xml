@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">WeatherAlert</string>
+
+    <string name="common_error">에러</string>
+
+    <string name="common_sunday">일</string>
+    <string name="common_monday">월</string>
+    <string name="common_tuesday">화</string>
+    <string name="common_wednesday">수</string>
+    <string name="common_thursday">목</string>
+    <string name="common_friday">금</string>
+    <string name="common_saturday">토</string>
+
 </resources>

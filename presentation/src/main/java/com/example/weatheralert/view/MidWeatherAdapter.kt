@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.MidWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.databinding.ItemMidWeatherBinding
+import com.example.weatheralert.util.ResourceUtil
 
 class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWeatherViewHolder>(diffUtil) {
 
@@ -30,7 +31,7 @@ class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWea
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MidWeatherEntity) {
-            binding.day.text = "테스트 날짜"
+            binding.day.text = converterDay(item.day)
             binding.tmp.text = "${item.midTmp.minTmp}° / ${item.midTmp.maxTmp}"
             binding.skyPm.setImageResource(setSkyImage(item.midSky.pmSky))
             binding.popPm.text = "${item.midSky.pmPop}%"
@@ -45,6 +46,19 @@ class MidWeatherAdapter : ListAdapter<MidWeatherEntity, MidWeatherAdapter.MidWea
                 "맑음" -> R.drawable.sun
                 else -> R.drawable.sun
             }
+        }
+
+        private fun converterDay(day: String): String {
+            return ResourceUtil.getString(when(day) {
+                "SUNDAY" -> R.string.common_sunday
+                "MONDAY" -> R.string.common_monday
+                "TUESDAY" -> R.string.common_tuesday
+                "WEDNESDAY" -> R.string.common_wednesday
+                "THURSDAY" -> R.string.common_thursday
+                "FRIDAY" -> R.string.common_friday
+                "SATURDAY" -> R.string.common_saturday
+                else -> R.string.common_error
+            })
         }
     }
 
