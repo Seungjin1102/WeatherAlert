@@ -175,32 +175,40 @@ object WeatherUtil {
         }
 
         val address = result[0].let {
-            it.adminArea + " " + it.locality + " " + it.subLocality + " " + it.thoroughfare
-        }
-        Timber.d("address: $address")
+            var address = ""
 
+            address = if (WeatherApplication.applicationContext().resources.getStringArray(R.array.special_city_list).contains(it.adminArea)) {
+                it.adminArea + " " + it.subLocality + " " + it.thoroughfare
+            } else {
+                it.adminArea + " " + it.locality + " " + it.subLocality + " " + it.thoroughfare
+            }
+            address
+        }
+
+        Timber.d("address: $address")
         return flow { emit(address) }
+//        return flow { emit( "세종시 블라 블라") } //todo remove 주소 테스트용
     }
 
     private fun isSpecialCity(city: String): Boolean {
-        return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).contains(city)
+        return WeatherApplication.applicationContext().resources.getStringArray(R.array.special_city_list).contains(city)
     }
 
     fun getMidTmpRegId(address: String): String {
+        if (address.isEmpty() || address.length < 2) return ""
         val wordList = address.split(" ")
-//        val wordList = "경기도 부천시 소사구 매봉산로 18".split(" ")
         val firstWord = wordList[0]
         val secondWord = wordList[1].substring(0, wordList[1].length - 1)
 
         Timber.d("address: $address, firstWord: $firstWord, secondWord: $secondWord")
 
-        return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp)
-                .find {
+        return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_tmp).find {
                     it.split("|").first() == if (isSpecialCity(firstWord)) firstWord else secondWord
                 }?.split("|")?.last() ?: ""
     }
 
     fun getMidSkyRegId(address: String): String {
+        if (address.isEmpty() || address.length < 2) return ""
         val city = address.split(" ").first()
         return WeatherApplication.applicationContext().resources.getStringArray(R.array.mid_regid_sky).find {
             it.split("|").first() == city
