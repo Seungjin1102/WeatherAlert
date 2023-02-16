@@ -23,8 +23,9 @@
             android:layout_height="200dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            app:sky="@{viewmodel.currentWeather.component5()}"
-            app:pty="@{viewmodel.currentWeather.component6()}"
+            time="@{viewmodel.currentWeather.component2()}"
+            sky="@{viewmodel.currentWeather.component5()}"
+            pty="@{viewmodel.currentWeather.component6()}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

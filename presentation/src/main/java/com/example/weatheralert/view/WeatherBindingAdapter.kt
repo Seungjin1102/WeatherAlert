@@ -60,21 +60,23 @@ object WeatherBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("sky", "pty")
-    fun ImageView.bindCurrentSky(sky: String?, pty: String?) {
-        if (sky != null && pty != null) {
-            this.setImageResource(when(sky) {
-                "1" -> R.drawable.sun
-                "3" -> R.drawable.sun_cloudy
-                else -> {
-                    when(pty) {
-                        "1", "4" -> R.drawable.rain
-                        "2" -> R.drawable.snow
-                        "3" -> R.drawable.rain_snow
-                        else -> R.drawable.cloud
+    @BindingAdapter("time", "sky", "pty")
+    fun ImageView.bindCurrentSky(time: String?, sky: String?, pty: String?) {
+        if (time != null && sky != null && pty != null) {
+            this.setImageResource(
+                when (sky) {
+                    "1" -> if ((time.toInt() / 100) in 7..18) R.drawable.sun else R.drawable.moon
+                    "3" -> if ((time.toInt() / 100) in 7..18) R.drawable.sun_cloudy else R.drawable.moon_cloudy
+                    else -> {
+                        when (pty) {
+                            "1", "4" -> R.drawable.rain
+                            "2" -> R.drawable.snow
+                            "3" -> R.drawable.rain_snow
+                            else -> R.drawable.cloud
+                        }
                     }
                 }
-            })
+            )
         }
     }
 

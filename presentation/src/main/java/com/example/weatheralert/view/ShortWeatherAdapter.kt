@@ -37,7 +37,7 @@ class ShortWeatherAdapter : ListAdapter<ShortWeatherEntity, ShortWeatherAdapter.
             } else {
                 converterTime(item.time)
             }
-            binding.sky.setImageResource(setSkyImage(item.sky, item.pty))
+            binding.sky.setImageResource(setSkyImage(item.sky, item.pty, item.time))
             binding.tmp.text = item.tmp + "°"
             binding.popText.text = item.pop + "%"
         }
@@ -57,10 +57,10 @@ class ShortWeatherAdapter : ListAdapter<ShortWeatherEntity, ShortWeatherAdapter.
             return stringTime
         }
 
-        private fun setSkyImage(sky: String, pty: String): Int  {
+        private fun setSkyImage(sky: String, pty: String, time: String): Int  {
             return when(sky) {
-                "1" -> R.drawable.sun
-                "3" -> R.drawable.sun_cloudy
+                "1" -> if ((time.toInt() / 100) in 7..18) R.drawable.sun else R.drawable.moon
+                "3" -> if ((time.toInt() / 100) in 7..18) R.drawable.sun_cloudy else R.drawable.moon_cloudy
                 else -> {
                     when(pty) {
                         "1", "4" -> R.drawable.rain
