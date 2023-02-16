@@ -3,7 +3,6 @@ package com.example.weatheralert.view
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -44,7 +43,7 @@ object WeatherBindingAdapter {
             val currentDay = data.first().date
 
             adapter.submitList(data.filter { it.date.toInt() < currentDay.toInt() + 3})
-            this.addItemDecoration(ShortWeatherAdapter.ShortWeatherItemDecoration())
+            if (this.itemDecorationCount == 0) this.addItemDecoration(ShortWeatherAdapter.ShortWeatherItemDecoration())
         }
     }
 
@@ -56,7 +55,7 @@ object WeatherBindingAdapter {
             this.adapter = adapter
 
             adapter.submitList(it)
-            this.addItemDecoration(MidWeatherAdapter.MidWeatherItemDecoration())
+            if (this.itemDecorationCount == 0) this.addItemDecoration(MidWeatherAdapter.MidWeatherItemDecoration())
         }
     }
 
