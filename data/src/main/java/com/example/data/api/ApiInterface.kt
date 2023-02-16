@@ -11,7 +11,7 @@ import retrofit2.Response
 
 interface ApiInterface {
 
-    @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${BuildConfig.WEATHER_API_KEY}")
+    @GET("VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${BuildConfig.SHORT_WEATHER_API_KEY}")
     suspend fun getShortWeather(
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") pageNo: Int,
