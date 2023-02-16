@@ -60,7 +60,10 @@ object WeatherBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("time", "sky", "pty")
+    @BindingAdapter(
+        value = ["time", "sky", "pty"],
+        requireAll = true
+    )
     fun ImageView.bindCurrentSky(time: String?, sky: String?, pty: String?) {
         if (time != null && sky != null && pty != null) {
             this.setImageResource(
