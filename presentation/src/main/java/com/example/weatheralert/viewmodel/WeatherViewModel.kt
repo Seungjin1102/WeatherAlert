@@ -1,6 +1,7 @@
 package com.example.weatheralert.viewmodel
 
 import android.content.Context
+import android.location.Location
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
@@ -98,28 +99,26 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    fun getAddress(context: Context) {
+    fun getAddress(context: Context, location: Location?) {
+        if (location == null) {
+            _shortWeatherUiState.value = UiState.Error(Throwable("GPS 관련 에러 발생", null))
+            return
+        }
         viewModelScope.launch {
-            WeatherUtil.getAddress(context as WeatherActivity).collect {
+            val point = WeatherUtil.pointConverter(location.latitude, location.longitude)
+            getShortWeather(
+                737,
+                1,
+                "JSON",
+                WeatherUtil.getShorWeatherDay(),
+                WeatherUtil.getShortWeatherTime(),
+                point.x.toString(),
+                point.y.toString()
+            )
+
+            WeatherUtil.getAddress(context as WeatherActivity, location).collect {
                 Timber.d("WeatherViewModel getAddress() collect 안 it: $it")
                 _addressState.value = it
-
-                //point를 못가져오면 단기예보 처리 불가 별도의 예외처리 필요
-                val point = WeatherUtil.getLocation(context)
-
-                if (point != null) {
-                    getShortWeather(
-                        737,
-                        1,
-                        "JSON",
-                        WeatherUtil.getShorWeatherDay(),
-                        WeatherUtil.getShortWeatherTime(),
-                        point.x.toString(),
-                        point.y.toString()
-                    )
-                } else {
-                    _shortWeatherUiState.value = UiState.Error(Throwable("단기예보 GPS 관련 에러 발생", null))
-                }
 
                 val tmpRegId = WeatherUtil.getMidTmpRegId(it)
                 val skyRegId = WeatherUtil.getMidSkyRegId(it)

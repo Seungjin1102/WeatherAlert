@@ -74,42 +74,22 @@ object WeatherUtil {
     }
 
     /**
-     * 현재 GPS return
-     */
-    fun getLocation(activity: Activity): Point? {
-        var point: Point? = null
-        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        var latitude = 0.0
-        var longitude = 0.0
-        var userLocation: Location = getLatLng(activity)
-
-        if (userLocation != null) {
-            latitude = userLocation.latitude
-            longitude = userLocation.longitude
-            Timber.d("latitude: $latitude longitude: $longitude")
-            point = pointConverter(latitude, longitude)
-        }
-
-        return point
-    }
-
-    /**
-     * 현재 GPS 위경도 return
+     * 현재 GPS Location return
      */
     @SuppressLint("MissingPermission")
-    private fun getLatLng(activity: Activity): Location{
+    fun getLocation(activity: Activity): Location? {
         if (locationManager == null) locationManager =
             activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        var currentLatLng: Location? = null
 
-        currentLatLng = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)// ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        return currentLatLng!!
+        return locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
     }
+
 
     /**
      * 기상청 단기예보에서 쓰는 Point 계산
      */
-    private fun pointConverter(v1: Double, v2: Double) : Point {
+    fun pointConverter(v1: Double, v2: Double) : Point {
         val RE = 6371.00877     // 지구 반경(km)
         val GRID = 5.0          // 격자 간격(km)
         val SLAT1 = 30.0        // 투영 위도1(degree)
@@ -149,9 +129,8 @@ object WeatherUtil {
      * 현재 주소 return
      * 시, 구, 군 까지 표시
      */
-    suspend fun getAddress(activity: Activity): Flow<String> {
+    suspend fun getAddress(activity: Activity, location: Location): Flow<String> {
         val geocoder = Geocoder(activity)
-        val location = getLatLng(activity)
 
         val result = suspendCancellableCoroutine { continuation ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

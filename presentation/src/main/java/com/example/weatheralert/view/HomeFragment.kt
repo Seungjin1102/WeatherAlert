@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseFragment
 import com.example.weatheralert.databinding.FragmentHomeBinding
+import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import com.gun0912.tedpermission.PermissionListener
@@ -26,15 +24,6 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewmodel = viewModel
-
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.shortWeatherUiState.collect {
-//
-//                }
-//            }
-//        }
-
         requestPermission()
     }
 
@@ -44,7 +33,8 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             return
         }
 
-        viewModel.getAddress(requireActivity())
+        val location = WeatherUtil.getLocation(requireActivity()) //Location return
+        viewModel.getAddress(requireActivity(), location)
     }
 
     private fun requestPermission() {
