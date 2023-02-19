@@ -25,6 +25,7 @@ object WeatherUtil {
 
     fun getShorWeatherDay(): Int {
         val current = LocalDateTime.now()
+        if (current.hour <= 2 && current.minute <= 10) current.minusDays(1) ////새벽 2:10 전까지는 전일 23:10 시간으로 계산
         return current.format(DateTimeFormatter.ISO_DATE).replace("-", "").toInt()
     }
 
@@ -33,12 +34,12 @@ object WeatherUtil {
      */
     fun getShortWeatherTime(): String {
         val current = LocalDateTime.now()
-        val formatted = current.format(DateTimeFormatter.ISO_LOCAL_TIME).replace(":", "").substring(0, 2) + "00"
-        var time = 0
-        val timeList = listOf(200, 500, 800, 1100, 1400, 1700, 2000, 2300)
+        val formatted = current.format(DateTimeFormatter.ISO_LOCAL_TIME).replace(":", "").substring(0, 4)
+        var time = 2310 //새벽 2:10 전까지는 전일 23:10 시간으로 계산
+        val timeList = listOf(210, 510, 810, 1110, 1410, 1710, 2010, 2310)
 
         timeList.forEach {
-            if (formatted.toInt() >= it) time = it
+            if (formatted.toInt() > it) time = (it / 100) * 100
         }
 
         return if (time.toString().length < 4) "0$time"

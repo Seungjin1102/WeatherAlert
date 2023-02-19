@@ -5,22 +5,29 @@ import com.example.data.model.weather.MidTmpWeatherResponse
 import com.example.data.model.weather.ShortWeatherResponse
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 fun mapperToShortWeather(items: List<ShortWeatherResponse>): List<ShortWeatherEntity> {
     val shortWeatherEntityList = mutableListOf<ShortWeatherEntity>()
     val itemsList = items.toMutableList()
 
+    val currentDate = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE).replace("-", "").toInt()
+    val currentTime = (LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME).replace(":", "").substring(0, 4).toInt()) / 100 * 100
+
     while (itemsList.size >= 12) {
         val item = itemsList.subList(0, 12)
-        val shortWeatherEntity = ShortWeatherEntity(item[0].fcstDate, item[0].fcstTime, "", "", "", "")
 
-        item.filter { it.category == "TMP" }.map { shortWeatherEntity.tmp = it.fcstValue }
-        item.filter { it.category == "POP" }.map { shortWeatherEntity.pop = it.fcstValue }
-        item.filter { it.category == "SKY" }.map { shortWeatherEntity.sky = it.fcstValue }
-        item.filter { it.category == "PTY" }.map { shortWeatherEntity.pty = it.fcstValue }
+        if (currentDate != item.first().fcstDate.toInt() || currentTime <= item.first().fcstTime.toInt()) {
+            val shortWeatherEntity = ShortWeatherEntity(item[0].fcstDate, item[0].fcstTime, "", "", "", "")
 
-        shortWeatherEntityList.add(shortWeatherEntity)
+            item.filter { it.category == "TMP" }.map { shortWeatherEntity.tmp = it.fcstValue }
+            item.filter { it.category == "POP" }.map { shortWeatherEntity.pop = it.fcstValue }
+            item.filter { it.category == "SKY" }.map { shortWeatherEntity.sky = it.fcstValue }
+            item.filter { it.category == "PTY" }.map { shortWeatherEntity.pty = it.fcstValue }
 
+            shortWeatherEntityList.add(shortWeatherEntity)
+        }
         itemsList.removeAll(item)
     }
     return shortWeatherEntityList.toList()
