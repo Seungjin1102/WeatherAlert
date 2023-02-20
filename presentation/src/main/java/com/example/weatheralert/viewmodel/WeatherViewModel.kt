@@ -3,6 +3,7 @@ package com.example.weatheralert.viewmodel
 import android.content.Context
 import android.location.Location
 import androidx.lifecycle.viewModelScope
+import com.example.data.exception.EmptyBodyException
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
 import com.example.domain.usecase.GetMidSkyWeatherUseCase
@@ -28,17 +29,21 @@ class WeatherViewModel @Inject constructor(
     private val getMidSkyWeatherUseCase: GetMidSkyWeatherUseCase
 ) : BaseViewModel() {
 
+    //단기예보 데이터
     private val _shortWeatherUiState: MutableStateFlow<UiState<List<ShortWeatherEntity>>> = MutableStateFlow(UiState.Loading)
     val shortWeatherUiState = _shortWeatherUiState.asStateFlow()
 
-    private val _addressState: MutableStateFlow<String> = MutableStateFlow("")
-    val addressState = _addressState.asStateFlow()
+    //중기예보 데이터
+    private val _midWeatherUiState: MutableStateFlow<UiState<List<MidWeatherEntity>>> = MutableStateFlow(UiState.Loading)
+    val midWeatherUiState = _midWeatherUiState.asStateFlow()
 
+    //오늘 날씨 데이터
     private val _currentWeather: MutableStateFlow<ShortWeatherEntity?> = MutableStateFlow(null)
     val currentWeather = _currentWeather.asStateFlow()
 
-    private val _midWeatherUiState: MutableStateFlow<UiState<List<MidWeatherEntity>>> = MutableStateFlow(UiState.Loading)
-    val midWeatherUiState = _midWeatherUiState.asStateFlow()
+    //현재 위치 주소 데이터
+    private val _addressState: MutableStateFlow<String> = MutableStateFlow("")
+    val addressState = _addressState.asStateFlow()
 
     //단기예보 조회
     private fun getShortWeather(
