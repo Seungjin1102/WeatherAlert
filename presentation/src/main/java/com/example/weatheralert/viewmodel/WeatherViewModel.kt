@@ -3,7 +3,6 @@ package com.example.weatheralert.viewmodel
 import android.content.Context
 import android.location.Location
 import androidx.lifecycle.viewModelScope
-import com.example.data.exception.EmptyBodyException
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
 import com.example.domain.usecase.GetMidSkyWeatherUseCase
@@ -47,16 +46,13 @@ class WeatherViewModel @Inject constructor(
 
     //단기예보 조회
     private fun getShortWeather(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         base_date: Int,
         base_time: String,
         nx: String,
         ny: String
     ) {
         viewModelScope.launch {
-            getShortWeatherUseCase.execute(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).onStart {
+            getShortWeatherUseCase.execute(base_date, base_time, nx, ny).onStart {
                 Timber.d("단기예보 flow start")
                 _shortWeatherUiState.value = UiState.Loading
             }.catch {
@@ -72,16 +68,13 @@ class WeatherViewModel @Inject constructor(
 
     //중기예보 조회
     private fun getMidWeather(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         tmpRegId: String,
         skyRegId: String,
         tmFc: String
     ) {
         viewModelScope.launch {
-            val midUiStateFlow = getMidTmpWeatherUseCase.execute(numOfRows, pageNo, dataType, tmpRegId, tmFc)
-                .zip(getMidSkyWeatherUseCase.execute(numOfRows, pageNo, dataType, skyRegId, tmFc)) { tmpFlow, skyFlow ->
+            val midUiStateFlow = getMidTmpWeatherUseCase.execute(tmpRegId, tmFc)
+                .zip(getMidSkyWeatherUseCase.execute(skyRegId, tmFc)) { tmpFlow, skyFlow ->
                     val resultList = mutableListOf<MidWeatherEntity>()
                     val today = LocalDateTime.now()
                     for (i in 0 until min(tmpFlow.size, skyFlow.size)) {
@@ -112,9 +105,6 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             val point = WeatherUtil.pointConverter(location.latitude, location.longitude)
             getShortWeather(
-                737,
-                1,
-                "JSON",
                 WeatherUtil.getShorWeatherDay(),
                 WeatherUtil.getShortWeatherTime(),
                 point.x.toString(),
@@ -130,9 +120,6 @@ class WeatherViewModel @Inject constructor(
 
                 if (tmpRegId.isNotEmpty() && skyRegId.isNotEmpty()) {
                     getMidWeather(
-                        30,
-                        1,
-                        "JSON",
                         tmpRegId,
                         skyRegId,
                         WeatherUtil.getMidWeatherTime()

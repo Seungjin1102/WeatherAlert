@@ -6,13 +6,12 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetShortWeatherUseCase @Inject constructor(private val repository: WeatherRepository) {
+
     suspend fun execute(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         base_date: Int,
         base_time: String,
         nx: String,
         ny: String
-    ): Flow<List<ShortWeatherEntity>> = repository.getShortWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny)
+    ): Flow<List<ShortWeatherEntity>> = repository.getShortWeather(base_date, base_time, nx, ny)
+
 }

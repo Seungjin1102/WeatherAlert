@@ -13,44 +13,35 @@ import kotlinx.coroutines.flow.flow
 class WeatherRepositoryImpl(private val weatherRemoteDataSource: WeatherRemoteDataSource): WeatherRepository {
 
     override suspend fun getShortWeather(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         base_date: Int,
         base_time: String,
         nx: String,
         ny: String
     ): Flow<List<ShortWeatherEntity>> {
         return flow {
-            weatherRemoteDataSource.getShortWeather(numOfRows, pageNo, dataType, base_date, base_time, nx, ny).collect {
+            weatherRemoteDataSource.getShortWeather(base_date, base_time, nx, ny).collect {
                 emit(mapperToShortWeather(items = it))
             }
         }
     }
 
     override suspend fun getMidTmpWeather(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         regId: String,
         tmFc: String
     ): Flow<List<MidWeatherEntity.MidTmpWeatherEntity>> {
         return flow {
-            weatherRemoteDataSource.getMidTmpWeather(numOfRows, pageNo, dataType, regId, tmFc).collect {
+            weatherRemoteDataSource.getMidTmpWeather(regId, tmFc).collect {
                 emit(mapperToMidTmpWeather(it))
             }
         }
     }
 
     override suspend fun getMidSkyWeather(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         regId: String,
         tmFc: String
     ): Flow<List<MidWeatherEntity.MidSkyWeatherEntity>> {
         return flow {
-            weatherRemoteDataSource.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc).collect {
+            weatherRemoteDataSource.getMidSkyWeather(regId, tmFc).collect {
                 emit(mapperToMidSkyWeather(it))
             }
         }

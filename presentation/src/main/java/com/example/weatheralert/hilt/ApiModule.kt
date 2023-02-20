@@ -1,6 +1,6 @@
 package com.example.weatheralert.hilt
 
-import com.example.data.api.ApiClient
+import com.example.data.api.ApiConst
 import com.example.data.api.ApiInterface
 import com.example.weatheralert.BuildConfig
 import com.google.gson.GsonBuilder
@@ -29,7 +29,7 @@ object ApiModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiClient.BASE_URL)
+            .baseUrl(ApiConst.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()

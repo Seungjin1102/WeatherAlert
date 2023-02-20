@@ -8,11 +8,8 @@ import javax.inject.Inject
 class GetMidSkyWeatherUseCase @Inject constructor(private val repository: WeatherRepository) {
 
     suspend fun execute(
-        numOfRows: Int,
-        pageNo: Int,
-        dataType: String,
         regId: String,
         tmFc: String
-    ) : Flow<List<MidWeatherEntity.MidSkyWeatherEntity>> = repository.getMidSkyWeather(numOfRows, pageNo, dataType, regId, tmFc)
+    ) : Flow<List<MidWeatherEntity.MidSkyWeatherEntity>> = repository.getMidSkyWeather(regId, tmFc)
 
 }
