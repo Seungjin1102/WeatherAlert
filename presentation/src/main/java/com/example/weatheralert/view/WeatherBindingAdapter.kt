@@ -24,7 +24,7 @@ object WeatherBindingAdapter {
     @JvmStatic
     @BindingAdapter("isShow")
     fun View.isShow(uiState: UiState<List<ShortWeatherEntity>>) {
-        this.visibility = if (uiState is UiState.Success) View.VISIBLE else View.GONE
+        this.visibility = if (uiState is UiState.Loading) View.GONE else View.VISIBLE
     }
 
     @JvmStatic
