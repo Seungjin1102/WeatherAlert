@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.ShortWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.databinding.ItemShortWeatherBinding
+import com.example.weatheralert.util.ResourceUtil
 
 class ShortWeatherAdapter : ListAdapter<ShortWeatherEntity, ShortWeatherAdapter.ShortWeatherViewHolder>(diffUtil) {
 
@@ -32,14 +33,14 @@ class ShortWeatherAdapter : ListAdapter<ShortWeatherEntity, ShortWeatherAdapter.
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ShortWeatherEntity, position: Int) {
             binding.time.text = if (item.time == "0000") {
-                if (position in 1..23) "내일"
-                else "모레"
+                if (position in 1..23) ResourceUtil.getString(R.string.common_tomorrow)
+                else ResourceUtil.getString(R.string.common_after_tomorrow)
             } else {
                 converterTime(item.time)
             }
             binding.sky.setImageResource(setSkyImage(item.sky, item.pty, item.time))
-            binding.tmp.text = item.tmp + "°"
-            binding.popText.text = item.pop + "%"
+            binding.tmp.text = item.tmp + ResourceUtil.getString(R.string.common_temperature_sign)
+            binding.popText.text = item.pop + ResourceUtil.getString(R.string.common_percent_sign)
         }
 
         private fun converterTime(time: String): String {
@@ -47,10 +48,10 @@ class ShortWeatherAdapter : ListAdapter<ShortWeatherEntity, ShortWeatherAdapter.
 
             (time.toInt() / 100).run {
                 stringTime = if (this < 12) {
-                    "오전 " + this + "시"
+                    ResourceUtil.getString(R.string.common_morning) + " " + this + "시"
                 } else {
-                    if (this == 12) "오후 12시"
-                    else "오후 " + (this - 12) + "시"
+                    if (this == 12) ResourceUtil.getString(R.string.common_afternoon) + " 12" + ResourceUtil.getString(R.string.common_oclock)
+                    else ResourceUtil.getString(R.string.common_afternoon) + " " + (this - 12) + ResourceUtil.getString(R.string.common_oclock)
                 }
             }
 

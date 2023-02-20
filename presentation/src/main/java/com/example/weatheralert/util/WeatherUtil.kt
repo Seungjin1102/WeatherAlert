@@ -167,7 +167,6 @@ object WeatherUtil {
 
         Timber.d("address: $address")
         return flow { emit(address) }
-//        return flow { emit( "세종시 블라 블라") } //todo remove 주소 테스트용
     }
 
     private fun isSpecialCity(city: String): Boolean {

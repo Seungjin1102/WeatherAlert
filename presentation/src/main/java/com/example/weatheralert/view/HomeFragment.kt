@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseFragment
 import com.example.weatheralert.databinding.FragmentHomeBinding
+import com.example.weatheralert.util.ResourceUtil
 import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +31,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
 
     fun getWeather() {
         if (!isCheckPermission) {
-            Toast.makeText(requireContext(), "위치 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), ResourceUtil.getString(R.string.weather_permission_gps_message), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -50,7 +51,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
                     isCheckPermission = false
                 }
             })
-            .setDeniedMessage("권한을 허용해주세요.")
+            .setDeniedMessage(ResourceUtil.getString(R.string.weather_permission_gps_message))
             .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .check()
     }

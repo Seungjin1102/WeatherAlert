@@ -8,8 +8,10 @@ import com.example.domain.model.ShortWeatherEntity
 import com.example.domain.usecase.GetMidSkyWeatherUseCase
 import com.example.domain.usecase.GetMidTmpWeatherUseCase
 import com.example.domain.usecase.GetShortWeatherUseCase
+import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseViewModel
 import com.example.weatheralert.base.UiState
+import com.example.weatheralert.util.ResourceUtil
 import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.view.WeatherActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -99,7 +101,7 @@ class WeatherViewModel @Inject constructor(
 
     fun getAddress(context: Context, location: Location?) {
         if (location == null) {
-            _shortWeatherUiState.value = UiState.Error(Throwable("GPS 관련 에러 발생", null))
+            _shortWeatherUiState.value = UiState.Error(Throwable(ResourceUtil.getString(R.string.weather_error_gps), null))
             return
         }
         viewModelScope.launch {
@@ -125,7 +127,7 @@ class WeatherViewModel @Inject constructor(
                         WeatherUtil.getMidWeatherTime()
                     )
                 } else {
-                    _midWeatherUiState.value = UiState.Error(Throwable("중기예보 지역코드 관련 에러 발생", null))
+                    _midWeatherUiState.value = UiState.Error(Throwable(ResourceUtil.getString(R.string.weather_error_mid_regid), null))
                 }
             }
         }
