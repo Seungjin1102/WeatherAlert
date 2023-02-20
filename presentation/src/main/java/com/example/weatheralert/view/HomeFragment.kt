@@ -24,16 +24,17 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewmodel = viewModel
+        binding.fragment = this
         requestPermission()
     }
 
-    private fun getWeather() {
+    fun getWeather() {
         if (!isCheckPermission) {
             Toast.makeText(requireContext(), "위치 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val location = WeatherUtil.getLocation(requireActivity()) //Location return
+        val location = WeatherUtil.getLocation(requireActivity())
         viewModel.getAddress(requireActivity(), location)
     }
 

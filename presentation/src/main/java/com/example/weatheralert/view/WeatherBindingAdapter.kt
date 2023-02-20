@@ -1,9 +1,9 @@
 package com.example.weatheralert.view
 
+import android.app.AlertDialog
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.MidWeatherEntity
@@ -11,6 +11,7 @@ import com.example.domain.model.ShortWeatherEntity
 import com.example.weatheralert.R
 import com.example.weatheralert.base.UiState
 import com.example.weatheralert.base.successOrNull
+import timber.log.Timber
 
 object WeatherBindingAdapter {
 
@@ -23,14 +24,21 @@ object WeatherBindingAdapter {
     @JvmStatic
     @BindingAdapter("isShow")
     fun View.isShow(uiState: UiState<List<ShortWeatherEntity>>) {
-        this.visibility = if (uiState is UiState.Loading) View.GONE else View.VISIBLE
+        this.visibility = if (uiState is UiState.Success) View.VISIBLE else View.GONE
     }
 
     @JvmStatic
-    @BindingAdapter("toast")
-    fun View.bindToast(throwable: Throwable?) {
-        throwable?.message?.let { errorMessage ->
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+    @BindingAdapter("dialog")
+    fun View.bindDialog(throwable: Throwable?) {
+        throwable?.message?.let {
+            val builder = AlertDialog.Builder(context).setTitle(R.string.dialog_error_title).setMessage(it)
+                .setCancelable(false)
+                .setPositiveButton(R.string.common_ok) { p0, p1 ->
+                    Timber.d("dialog ok click")
+                }
+
+            val dialog = builder.create()
+            dialog.show()
         }
     }
 

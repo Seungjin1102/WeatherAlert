@@ -8,6 +8,10 @@
         <import type="com.example.weatheralert.base.UiStateKt"/>
 
         <variable
+            name="fragment"
+            type="com.example.weatheralert.view.HomeFragment" />
+
+        <variable
             name="viewmodel"
             type="com.example.weatheralert.viewmodel.WeatherViewModel" />
 
@@ -51,6 +55,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:paddingBottom="30dp">
 
+                <ImageView
+                    android:id="@+id/refresh"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    android:onClick="@{() -> fragment.getWeather()}"
+                    android:src="@drawable/refresh"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    isShow="@{viewmodel.shortWeatherUiState}"/>
+
                 <LinearLayout
                     android:id="@+id/today_weather"
                     android:layout_width="match_parent"
@@ -58,7 +74,7 @@
                     android:layout_marginTop="50dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    toast="@{UiStateKt.throwableOrNull(viewmodel.shortWeatherUiState)}">
+                    dialog="@{UiStateKt.throwableOrNull(viewmodel.shortWeatherUiState)}">
                     <include
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -96,7 +112,7 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/mid_weather_card"
-                        toast="@{UiStateKt.throwableOrNull(viewmodel.midWeatherUiState)}"
+                        dialog="@{UiStateKt.throwableOrNull(viewmodel.midWeatherUiState)}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
