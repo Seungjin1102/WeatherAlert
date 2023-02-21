@@ -28,10 +28,13 @@ object WeatherBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("dialog")
-    fun View.bindDialog(throwable: Throwable?) {
+    @BindingAdapter(
+        value = ["throwable", "title"],
+        requireAll = true
+    )
+    fun View.bindDialog(throwable: Throwable?, title: String) {
         throwable?.message?.let {
-            val builder = AlertDialog.Builder(context).setTitle(R.string.dialog_error_title).setMessage(it)
+            val builder = AlertDialog.Builder(context).setTitle(title).setMessage(it)
                 .setCancelable(false)
                 .setPositiveButton(R.string.common_ok) { p0, p1 ->
                     Timber.d("dialog ok click")

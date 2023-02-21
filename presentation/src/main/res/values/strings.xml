@@ -26,5 +26,6 @@
     <string name="weather_error_gps">GPS 관련 에러 발생</string>
     <string name="weather_error_mid_regid">중기예보 지역코드 관련 에러 발생</string>
 
-    <string name="dialog_error_title">에러 발생</string>
+    <string name="dialog_short_weather_error_title">단기예보 에러 발생</string>
+    <string name="dialog_mid_weather_error_title">중기예보 에러 발생</string>
 </resources>
