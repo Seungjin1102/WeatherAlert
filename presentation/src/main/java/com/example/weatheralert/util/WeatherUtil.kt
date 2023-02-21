@@ -21,8 +21,6 @@ import kotlin.coroutines.resume
 
 object WeatherUtil {
 
-    var locationManager: LocationManager? = null
-
     fun getShorWeatherDay(): Int {
         val current = LocalDateTime.now()
         if (current.hour <= 2 && current.minute <= 10) current.minusDays(1) ////새벽 2:10 전까지는 전일 23:10 시간으로 계산
@@ -79,8 +77,9 @@ object WeatherUtil {
      */
     @SuppressLint("MissingPermission")
     fun getLocation(activity: Activity): Location? {
-        if (locationManager == null) locationManager =
-            activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        val locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+
+        Timber.d("locationManager: $locationManager")
 
         return locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
