@@ -1,6 +1,8 @@
 package com.example.weatheralert.view
 
 import android.Manifest
+import android.content.Context.LOCATION_SERVICE
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -8,6 +10,7 @@ import androidx.fragment.app.viewModels
 import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseFragment
 import com.example.weatheralert.databinding.FragmentHomeBinding
+import com.example.weatheralert.util.PreferenceUtil
 import com.example.weatheralert.util.ResourceUtil
 import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.viewmodel.WeatherViewModel
@@ -35,7 +38,21 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             return
         }
 
-        val location = WeatherUtil.getLocation(requireActivity())
+        var location = WeatherUtil.getLocation(requireActivity())
+        val locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Timber.d("GPS On")
+            if (location != null) {
+                PreferenceUtil.setLntLng("last_latitude", location.latitude.toFloat())
+                PreferenceUtil.setLntLng("last_longitude", location.longitude.toFloat())
+            } else {
+                location = WeatherUtil.getPreferenceLocation()
+                Timber.d("데이터가 오지 않을 경우 location: $location")
+            }
+        }
+
+        Timber.d("preference latitude: ${PreferenceUtil.getLntLng("last_latitude", 0f)}\tlongitude: ${PreferenceUtil.getLntLng("last_longitude", 0f)}")
         viewModel.getAddress(requireActivity(), location)
     }
 

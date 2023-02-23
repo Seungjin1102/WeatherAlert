@@ -85,6 +85,19 @@ object WeatherUtil {
             ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
     }
 
+    /**
+     * GPS ON인 상태에서 Location이 오지 않을 경우 가장 최근 Location을 사용
+     */
+    fun getPreferenceLocation(): Location? {
+        val latitude = PreferenceUtil.getLntLng(PreferenceUtil.PREFERENCE_LAST_LATITUDE, 0f).toDouble()
+        val longitude = PreferenceUtil.getLntLng(PreferenceUtil.PREFERENCE_LAST_LONGITUDE, 0f).toDouble()
+
+        return if (latitude.compareTo(0f) == 0 || longitude.compareTo(0f) == 0) null
+        else Location(LocationManager.NETWORK_PROVIDER).apply {
+            this.latitude = latitude
+            this.longitude = longitude
+        }
+    }
 
     /**
      * 기상청 단기예보에서 쓰는 Point 계산
