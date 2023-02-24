@@ -1,8 +1,14 @@
 package com.example.weatheralert.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
+import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -10,9 +16,7 @@ import androidx.fragment.app.viewModels
 import com.example.weatheralert.R
 import com.example.weatheralert.base.BaseFragment
 import com.example.weatheralert.databinding.FragmentHomeBinding
-import com.example.weatheralert.util.PreferenceUtil
 import com.example.weatheralert.util.ResourceUtil
-import com.example.weatheralert.util.WeatherUtil
 import com.example.weatheralert.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import com.gun0912.tedpermission.PermissionListener
@@ -24,6 +28,9 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
 
     override val viewModel: WeatherViewModel by viewModels()
     private var isCheckPermission: Boolean = false
+
+    private lateinit var locationManager: LocationManager
+    private lateinit var weatherLocationListener: WeatherLocationListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,22 +45,50 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             return
         }
 
-        var location = WeatherUtil.getLocation(requireActivity())
-        val locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
+        startLocationTrack()
+    }
 
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Timber.d("GPS On")
-            if (location != null) {
-                PreferenceUtil.setLntLng("last_latitude", location.latitude.toFloat())
-                PreferenceUtil.setLntLng("last_longitude", location.longitude.toFloat())
-            } else {
-                location = WeatherUtil.getPreferenceLocation()
-                Timber.d("데이터가 오지 않을 경우 location: $location")
-            }
+    private fun startLocationTrack() {
+        if (::locationManager.isInitialized.not()) {
+            locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
         }
 
-        Timber.d("preference latitude: ${PreferenceUtil.getLntLng("last_latitude", 0f)}\tlongitude: ${PreferenceUtil.getLntLng("last_longitude", 0f)}")
-        viewModel.getAddress(requireActivity(), location)
+        Timber.d("network state: ${checkNetworkState()}\tgps state: ${locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)}")
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            viewModel.failGpsState(ResourceUtil.getString(R.string.weather_error_gps_state))
+        } else if (!checkNetworkState()) {
+            viewModel.failNetWorkState(ResourceUtil.getString(R.string.weather_error_network_state))
+        } else {
+            setLocationListener()
+        }
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun setLocationListener() {
+        val minTime: Long = 1000
+        val minDistance = 100f
+
+        if (::weatherLocationListener.isInitialized.not()) {
+            weatherLocationListener = WeatherLocationListener()
+        }
+
+        with(locationManager) {
+            requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                minTime,
+                minDistance,
+                weatherLocationListener
+            )
+
+            requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                minTime,
+                minDistance,
+                weatherLocationListener
+            )
+        }
     }
 
     private fun requestPermission() {
@@ -72,4 +107,31 @@ class HomeFragment: BaseFragment<FragmentHomeBinding, WeatherViewModel>(R.layout
             .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .check()
     }
+
+    private fun checkNetworkState(): Boolean {
+        val connectivityManager: ConnectivityManager = requireContext().getSystemService(ConnectivityManager::class.java)
+        val network: Network = connectivityManager.activeNetwork ?: return false
+        val actNetwork: NetworkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return when {
+            actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            else -> false
+        }
+    }
+
+    inner class WeatherLocationListener : LocationListener {
+        override fun onLocationChanged(p0: Location) {
+            Timber.d("location: $p0")
+            viewModel.getAddress(requireActivity(), p0)
+            removeLocationListener()
+        }
+
+        private fun removeLocationListener() {
+            if (::locationManager.isInitialized && ::weatherLocationListener.isInitialized) {
+                locationManager.removeUpdates(weatherLocationListener)
+            }
+        }
+    }
+
 }

@@ -23,9 +23,11 @@
     <string name="common_oclock">시</string>
 
     <string name="weather_permission_gps_message">위치 권한을 허용해주세요.</string>
-    <string name="weather_error_gps">GPS 관련 에러 발생</string>
-    <string name="weather_error_mid_regid">중기예보 지역코드 관련 에러 발생</string>
+    <string name="weather_error_gps">GPS 관련 에러 발생.</string>
+    <string name="weather_error_mid_regid">중기예보 지역코드 관련 에러 발생.</string>
+    <string name="weather_error_network_state">네트워크 연결 상태를 확인해주세요.</string>
+    <string name="weather_error_gps_state">GPS 연결 상태를 확인해주세요.</string>
 
-    <string name="dialog_short_weather_error_title">단기예보 에러 발생</string>
-    <string name="dialog_mid_weather_error_title">중기예보 에러 발생</string>
+    <string name="dialog_short_weather_error_title">단기예보 에러 발생.</string>
+    <string name="dialog_mid_weather_error_title">중기예보 에러 발생.</string>
 </resources>

@@ -1,13 +1,10 @@
 package com.example.weatheralert.util
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.Point
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.location.LocationManager
 import android.os.Build
 import com.example.weatheralert.R
 import com.example.weatheralert.di.WeatherApplication
@@ -70,33 +67,6 @@ object WeatherUtil {
     private fun plusZero(num: Int): String {
         return if (num < 10) "0$num"
         else num.toString()
-    }
-
-    /**
-     * 현재 GPS Location return
-     */
-    @SuppressLint("MissingPermission")
-    fun getLocation(activity: Activity): Location? {
-        val locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-
-        Timber.d("locationManager: $locationManager")
-
-        return locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            ?: locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    }
-
-    /**
-     * GPS ON인 상태에서 Location이 오지 않을 경우 가장 최근 Location을 사용
-     */
-    fun getPreferenceLocation(): Location? {
-        val latitude = PreferenceUtil.getLntLng(PreferenceUtil.PREFERENCE_LAST_LATITUDE, 0f).toDouble()
-        val longitude = PreferenceUtil.getLntLng(PreferenceUtil.PREFERENCE_LAST_LONGITUDE, 0f).toDouble()
-
-        return if (latitude.compareTo(0f) == 0 || longitude.compareTo(0f) == 0) null
-        else Location(LocationManager.NETWORK_PROVIDER).apply {
-            this.latitude = latitude
-            this.longitude = longitude
-        }
     }
 
     /**

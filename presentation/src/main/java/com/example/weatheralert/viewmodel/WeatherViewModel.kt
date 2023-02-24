@@ -3,6 +3,8 @@ package com.example.weatheralert.viewmodel
 import android.content.Context
 import android.location.Location
 import androidx.lifecycle.viewModelScope
+import com.example.data.exception.GpsFailureException
+import com.example.data.exception.NetworkFailureException
 import com.example.domain.model.MidWeatherEntity
 import com.example.domain.model.ShortWeatherEntity
 import com.example.domain.usecase.GetMidSkyWeatherUseCase
@@ -131,6 +133,14 @@ class WeatherViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun failGpsState(message: String) {
+        _shortWeatherUiState.value = UiState.Error(GpsFailureException(message))
+    }
+
+    fun failNetWorkState(message: String) {
+        _shortWeatherUiState.value = UiState.Error(NetworkFailureException(message))
     }
 
 }
