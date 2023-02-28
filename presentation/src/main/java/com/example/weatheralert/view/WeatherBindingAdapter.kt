@@ -12,6 +12,7 @@ import com.example.weatheralert.R
 import com.example.weatheralert.base.UiState
 import com.example.weatheralert.base.successOrNull
 import timber.log.Timber
+import java.time.LocalDateTime
 
 object WeatherBindingAdapter {
 
@@ -51,9 +52,14 @@ object WeatherBindingAdapter {
         uiState.successOrNull()?.let { data ->
             val adapter = ShortWeatherAdapter()
             this.adapter = adapter
-            val currentDay = data.first().date
 
-            adapter.submitList(data.filter { it.date.toInt() < currentDay.toInt() + 3})
+            val set = HashSet<Int>().apply {
+                add(LocalDateTime.now().dayOfMonth)
+                add(LocalDateTime.now().plusDays(1).dayOfMonth)
+                add(LocalDateTime.now().plusDays(2).dayOfMonth)
+            }
+
+            adapter.submitList(data.filter { set.contains(it.date.substring(6, 8).toInt()) })
             if (this.itemDecorationCount == 0) this.addItemDecoration(ShortWeatherAdapter.ShortWeatherItemDecoration())
         }
     }
